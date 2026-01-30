@@ -1,4 +1,5 @@
-r"""Implements the Auction algorithm for solving a linear assignment problem.
+r"""
+Implements the Auction algorithm for solving a linear assignment problem.
 
 The Auction algorithm is an iterative algorithm that solves the linear assignment
 problem by simulating an auction process.
@@ -6,11 +7,11 @@ problem by simulating an auction process.
 
 from __future__ import annotations
 
-import typing as T
+import typing as T  # noqa: N812
 
 import torch
 import torch.fx
-import typing_extensions as TX
+import typing_extensions as TX  # noqa: N812
 
 from ._base import Assignment
 
@@ -23,11 +24,18 @@ class Auction(Assignment):
     bid_size: T.Final[float]
 
     def __init__(self, bid_size=0.05, *args, **kwargs):
-        """Parameters
+        """
+        Initialize the Auction assignment module.
+
+        Parameters
         ----------
         bid_size, optional
             Step size of auction bids, which should be tuned according to the expected
             domain of the cost matrix.
+        *args
+            Positional arguments passed to the base class.
+        **kwargs
+            Keyword arguments passed to the base class.
 
         """
         super().__init__(*args, **kwargs)
@@ -94,10 +102,10 @@ def auction_assignment(
         # Update cost matrix with the high bids
         cost[:, have_bidder] += high_bids
 
-        # Temporarily unassign rows that were previously assigned to the current winning columns
-        ass[
-            (ass.view(-1, 1) == have_bidder.view(1, -1)).sum(dim=1).nonzero().squeeze()
-        ] = -1
+        # Temporarily unassign rows that were previously assigned to the current
+        # winning columns
+        ass_prev = (ass.view(-1, 1) == have_bidder.view(1, -1)).sum(dim=1).nonzero()
+        ass[ass_prev.squeeze()] = -1
 
         # Assign high bidders to the winning columns
         ass[high_bidders] = have_bidder.squeeze()

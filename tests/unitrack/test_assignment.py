@@ -97,13 +97,18 @@ def generate_cost(size: float) -> tuple[torch.Tensor, torch.Tensor]:
     ],
 )
 def test_assignment_known(cost_matrix, solution, solver):
-    """Test if all algorithms can solve the known N x M cost matrix to known N x 2 matches"""
+    """Test if algorithms can solve the known N x M cost matrix.
+
+    Checks matches against known N x 2 matches.
+    """
     print(f"-- {solver.__class__.__name__} --")
 
     cost_matrix = torch.as_tensor(cost_matrix)
 
     print(
-        f"- Cost matrix [{cost_matrix.shape[0]}, {cost_matrix.shape[1]}]: mean = {cost_matrix.mean():.3f}; std = {cost_matrix.std():.3f}; min = {cost_matrix.min():.3f}; max = {cost_matrix.max():.3f}"
+        f"- Cost matrix [{cost_matrix.shape[0]}, {cost_matrix.shape[1]}]: "
+        f"mean = {cost_matrix.mean():.3f}; std = {cost_matrix.std():.3f}; "
+        f"min = {cost_matrix.min():.3f}; max = {cost_matrix.max():.3f}"
     )
 
     solution = torch.as_tensor(solution)

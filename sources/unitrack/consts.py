@@ -1,3 +1,9 @@
+"""
+Constants used throughout the unitrack package.
+
+Defines standard keys for TensorDicts used in tracking.
+"""
+
 from __future__ import annotations
 
 from typing import Final

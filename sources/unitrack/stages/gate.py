@@ -1,10 +1,12 @@
+"""Gate stage."""
+
 from __future__ import annotations
 
 import abc
-import typing as T
+import typing as T  # noqa: N812
 
 import torch
-import typing_extensions as TX
+import typing_extensions as TX  # noqa: N812
 from tensordict import TensorDictBase
 from torch import nn
 
@@ -13,8 +15,10 @@ from .base_stage import Stage
 
 
 class GateModule(nn.Module):
-    """A module that performs gating of observations, returns a mask for candidates and
-    detections.
+    """
+    A module that performs gating of observations.
+
+    Returns a mask for candidates and detections.
     """
 
     @abc.abstractmethod
@@ -29,6 +33,17 @@ class Gate(Stage):
     """A stage that performs gating of observations."""
 
     def __init__(self, gate: nn.Module, then: T.Sequence[Stage]):
+        """
+        Initialize the Gate stage.
+
+        Parameters
+        ----------
+        gate
+            Gating module.
+        then
+            Stages to execute on the gated observations.
+
+        """
         # TODO: required fields?
         super().__init__()
         self.gate = gate

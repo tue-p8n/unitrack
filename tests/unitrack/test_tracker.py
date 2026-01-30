@@ -50,13 +50,13 @@ def test_tracker():
 
     mem = TrackletMemory(
         states={
-            KEY_POSITION: states.Value(dtype),
+            KEY_POSITION: states.Value(dtype, shape=(1,)),
             KEY_CATEGORY: states.Value(dtype=torch.long),
         }
     )
 
     for frame, det in enumerate(frames):
-        det = TensorDict.from_dict(det, device=device)
+        det = TensorDict.from_dict(det, device=device, batch_size=[1 + frame * 2])
         det_amt = det.batch_size[0]
 
         ctx, obs = mem.read(frame)

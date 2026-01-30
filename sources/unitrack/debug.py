@@ -8,7 +8,9 @@ __all__ = ["check_debug_enabled"]
 
 @functools.cache
 def check_debug_enabled():
-    """Check whether debugging is enabled by reading the environment
-    variable ``UNITRACK_DEBUG``.
+    """
+    Check whether debugging is enabled.
+
+    Reads the environment variable ``UNITRACK_DEBUG``.
     """
     return os.getenv("UNITRACK_DEBUG") is not None

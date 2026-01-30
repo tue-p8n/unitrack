@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-import typing as T
+import typing as T  # noqa: N812
 from collections.abc import Sequence
 
 import torch
@@ -16,7 +16,11 @@ __all__ = ["MultiStageTracker", "SelectField"]
 
 
 class SelectField(TensorDictModule):
-    """Select fields from some input TensorDict and copy them to the output TensorDict."""
+    """
+    Select fields from some input TensorDict.
+
+    Copy them to the output TensorDict.
+    """
 
     def __init__(self, *keys: str, **keys_mapping: str):
         in_keys = []
@@ -54,9 +58,10 @@ class MultiStageTracker(nn.Module):
         inp: TensorDictBase,
         num: int,
     ) -> tuple[TensorDictBase, TensorDictBase]:
-        """Perform tracking, returns a tuple of updated observations and the field-values
-        of new tracklets.
+        """
+        Perform tracking.
 
+        Returns a tuple of updated observations and the field-values of new tracklets.
 
         Parameters
         ----------
@@ -71,7 +76,6 @@ class MultiStageTracker(nn.Module):
         num: int
             The amount of detections made. Fields must allocate within a TensorDict
             that enforces ``batch_size=[num]``.
-
 
         Returns
         -------

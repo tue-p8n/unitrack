@@ -58,11 +58,11 @@ line-length = 88
 
 [tool.ruff.lint]
 select = [
-  "ARG",  # flake8-unused-arguments
-  "B",    # flake8-bugbear
-  "C",    # mccabe
-  "C4",   # flake8-comprehensions
-  "DOC",  # doclint
+  "ARG", # flake8-unused-arguments
+  "B",   # flake8-bugbear
+  "C",   # mccabe
+  "C4",  # flake8-comprehensions
+  #"DOC",  # doclint
   "D",    # pydocstyle
   "E",    # pycodestyle
   "EM",   # flake8-errmsg
@@ -90,6 +90,8 @@ select = [
 ignore = [
   "PLR2004", # magic numbers
   "PLW2901", # for loop variable overwritten
+  "D212",
+  "D203",
 ]
 
 [tool.ruff.lint.per-file-ignores]

@@ -1,8 +1,10 @@
+"""Association stage."""
+
 from __future__ import annotations
 
-import typing as T
+import typing as T  # noqa: N812
 
-import typing_extensions as TX
+import typing_extensions as TX  # noqa: N812
 from tensordict import TensorDictBase
 
 if T.TYPE_CHECKING:
@@ -17,8 +19,10 @@ __all__ = ["Association"]
 
 
 class Association(Stage):
-    """An association stage assigns new track IDs using a cost matrix computed via
-    a :class:`.Cost` module.
+    """
+    An association stage.
+
+    Assigns new track IDs using a cost matrix computed via a :class:`.Cost` module.
     """
 
     def __init__(
@@ -26,6 +30,17 @@ class Association(Stage):
         cost: Cost,
         assignment: Assignment,
     ) -> None:
+        """
+        Initialize the Association stage.
+
+        Parameters
+        ----------
+        cost
+            Cost module.
+        assignment
+            Assignment module.
+
+        """
         super().__init__()
 
         self.cost = cost

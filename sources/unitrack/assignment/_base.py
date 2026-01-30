@@ -21,7 +21,8 @@ class Assignment(torch.nn.Module):
     def forward(
         self, cost_matrix: torch.Tensor
     ) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
-        """Solve the cost matrix.
+        """
+        Solve the cost matrix.
 
         Parameters
         ----------

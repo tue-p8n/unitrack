@@ -1,9 +1,15 @@
-r"""This module defines the `TrackletMemory` class, which is a container module for tracking predictions/paths, commonly referred to as "tracklets" in the literature.
+r"""
+Defines the `TrackletMemory` class.
 
-A tracklet represents a generic collection of states, such as objects in a scene. The states of the tracklets are implemented in subclasses of the `Field` class, which can be used to compute a distance matrix between tracklets at different frames.
+`TrackletMemory` is a container module for tracking predictions/paths, commonly
+referred to as "tracklets" in the literature.
+
+A tracklet represents a generic collection of states, such as objects in a scene.
+The states of the tracklets are implemented in subclasses of the `Field` class, which
+can be used to compute a distance matrix between tracklets at different frames.
 """
 
-import typing as T
+import typing as T  # noqa: N812
 from enum import StrEnum
 
 import torch
@@ -27,8 +33,10 @@ class TrackletMemoryWriteReturnType(StrEnum):
 
 
 class TrackletMemory(nn.Module):
-    """A memory module that tracks the states of tracklets over time and provides
-    a list of IDs to assign the the new detections at the current frame when
+    """
+    A memory module that tracks the states of tracklets over time.
+
+    Provides a list of IDs to assign the the new detections at the current frame when
     the memory is written to.
 
     Properties
@@ -49,6 +57,7 @@ class TrackletMemory(nn.Module):
     auto_reset
         Whether to automatically reset the memory when the current frame is larger
         than the stored frame (fixed).
+
     """
 
     states: nn.ModuleDict
@@ -63,7 +72,7 @@ class TrackletMemory(nn.Module):
     max_lost: T.Final[int]
     auto_reset: T.Final[bool]
 
-    def __init__(
+    def __init__(  # noqa: PLR0913
         self,
         states: T.Mapping[str, State],
         max_id: int = 2**15,
@@ -80,7 +89,8 @@ class TrackletMemory(nn.Module):
         self.fps = float(fps)
         self.max_id = int(max_id)
         self.max_lost = int(max_lost)
-        self.auto_reset = auto_reset  # reset the memory when the current frame is larger than the stored frame
+        # reset the memory when the current frame is larger than the stored frame
+        self.auto_reset = auto_reset
 
         self.states = nn.ModuleDict()
         self.states[KEY_FRAME] = ValueState(torch.int32, slots=slots)
@@ -121,8 +131,8 @@ class TrackletMemory(nn.Module):
         )
 
     def __len__(self) -> int:
-        """Return the number of times that a new observation has been comitted to the
-        memory.
+        """
+        Return the number of times that a new observation has been comitted.
 
         Note that this does not necessarily correspond to the number of frames that
         have passed in the upstream application, as the memory write operation may
@@ -137,7 +147,8 @@ class TrackletMemory(nn.Module):
         obs: TensorDictBase,
         new: TensorDictBase,
     ) -> Tensor:
-        """Apply the updated observations and new detections to the tracklets states.
+        """
+        Apply the updated observations and new detections to the tracklets states.
 
         Both the updated observations and new detections have a key `KEY_INDEX` that
         corresponds to a `torch.long` tensor of indices. This value is used to
@@ -186,13 +197,17 @@ class TrackletMemory(nn.Module):
         obs: TensorDictBase,
         new: TensorDictBase,
     ) -> TensorDictBase:
-        """Variant of :meth:`write` that also returns the observed state of the tracklets."""
+        """
+        Variant of :meth:`write`.
+
+        Also returns the observed state of the tracklets.
+        """
         return T.cast(
             TensorDictBase,
             self._write(ctx, obs, new, return_type=TrackletMemoryWriteReturnType.STATE),
         )
 
-    def _write(
+    def _write(  # noqa: C901
         self,
         ctx: TensorDictBase,
         obs: TensorDictBase,
@@ -287,7 +302,8 @@ class TrackletMemory(nn.Module):
                 return None
 
     def _update_states(self, obs: TensorDictBase, frame: int) -> tuple[Tensor, Tensor]:
-        """Update the states with the evolved observations.
+        """
+        Update the states with the evolved observations.
 
         Returns
         -------
@@ -322,7 +338,8 @@ class TrackletMemory(nn.Module):
         return track_idxs, obs.get(KEY_ID)
 
     def _extend_states(self, new: TensorDictBase, frame: int) -> tuple[Tensor, Tensor]:
-        """Exctend the states with new detections, creating new tracklets.
+        """
+        Exctend the states with new detections, creating new tracklets.
 
         Returns
         -------
@@ -392,8 +409,10 @@ class TrackletMemory(nn.Module):
 
     @torch.no_grad()
     def read(self, frame: int) -> tuple[TensorDictBase, TensorDictBase]:
-        """Observe the current state of tracklets. Evolves the states of the tracklets
-        to the current frame.
+        """
+        Observe the current state of tracklets.
+
+        Evolves the states of the tracklets to the current frame.
 
         Parameters
         ----------
@@ -417,7 +436,10 @@ class TrackletMemory(nn.Module):
                     pass
                 self.reset()
             else:
-                msg = f"Frame index {frame} is less than or equal to saved frame {self.frame=}!"
+                msg = (
+                    f"Frame index {frame} is less than or equal to saved frame"
+                    f" {self.frame=}!"
+                )
                 raise IndexError(msg)
 
         if check_debug_enabled():
@@ -475,13 +497,14 @@ class TrackletMemory(nn.Module):
         self.index_mask.fill_(False)
 
         for state in self.states.values():
-            state.reset(self.index_range)  # type: ignore
+            state.reset(self.index_range)  # type: ignore # noqa: PGH003
 
     @T.override
     def forward(
         self, ctx: TensorDictBase, obs: TensorDictBase, new: TensorDictBase
     ) -> Tensor:
-        """Forward pass of the memory module that wraps the :meth:`write` method.
+        """
+        Forward pass of the memory module that wraps the :meth:`write` method.
 
         Users are encouraged to use the :meth:`write` method directly, as it is more
         explicit.

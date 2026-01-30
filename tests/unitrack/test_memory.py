@@ -2,7 +2,7 @@ r"""Tests for ``unitrack.memory``."""
 
 from __future__ import annotations
 
-import typing as T
+import typing as T  # noqa: N812
 
 import pytest
 import torch
@@ -31,6 +31,7 @@ def memory() -> ut.TrackletMemory:
             KEY_STATE_INT: ut.states.Value(torch.int),
         },
         auto_reset=False,
+        max_lost=100,
     )
 
     assert len(mem) == 0, "Memory should be empty at initialization."
@@ -44,8 +45,9 @@ def test_memory_state(memory: ut.TrackletMemory) -> None:
 
 
 def test_memory_read(memory: ut.TrackletMemory) -> None:
-    r"""Tests whether the memory resets when the current frame is larger than the stored
-    frame.
+    r"""Tests whether the memory resets.
+
+    The memory should reset when the current frame is larger than the stored frame.
     """
     assert memory.frame == -1.0, "Memory frame should be 0 at initialization."
     assert memory.write_count == 0, "memory.write_count should be 0 at initialization."
@@ -53,16 +55,16 @@ def test_memory_read(memory: ut.TrackletMemory) -> None:
     unit_delta = torch.tensor(1.0 / memory.fps)
 
     # Test reading at frames past the current index 0
-    ctx, obs = memory.read(0)
+    ctx, _ = memory.read(0)
 
     assert ctx[ut.consts.KEY_FRAME].item() == 0
     assert torch.allclose(ctx[ut.consts.KEY_DELTA], unit_delta)
 
-    ctx, obs = memory.read(1)
+    ctx, _ = memory.read(1)
 
     assert ctx[ut.consts.KEY_FRAME].item() == 1
     assert torch.allclose(ctx[ut.consts.KEY_DELTA], 2 * unit_delta)
-    ctx, obs = memory.read(5)
+    ctx, _ = memory.read(5)
 
     assert ctx[ut.consts.KEY_FRAME].item() == 5
     assert torch.allclose(ctx[ut.consts.KEY_DELTA], 6 * unit_delta)
@@ -75,7 +77,7 @@ def test_memory_read(memory: ut.TrackletMemory) -> None:
 
     # Test increasing the frame index and reading at subsequent frames
     memory.frame.fill_(10)
-    ctx, obs = memory.read(11)
+    ctx, _ = memory.read(11)
     assert ctx[ut.consts.KEY_FRAME].item() == 11
     assert torch.allclose(ctx[ut.consts.KEY_DELTA], unit_delta)
 
@@ -84,7 +86,8 @@ def test_memory_read(memory: ut.TrackletMemory) -> None:
     assert memory.write_count == 5
     assert len(memory) == 5
 
-    # Test that reading at negative frame indices raises an error when `auto_reset` is `False`
+    # Test that reading at negative frame indices raises an error when `auto_reset`
+    # is `False`
     memory.auto_reset = False
 
     assert memory.auto_reset is False
@@ -94,7 +97,8 @@ def test_memory_read(memory: ut.TrackletMemory) -> None:
     assert memory.frame == 10
     assert memory.write_count == 5
 
-    # Test that reading at previous frames does not raise an error and resets the counter when `auto_reset` is `True`
+    # Test that reading at previous frames does not raise an error and resets the
+    # counter when `auto_reset` is `True`
     memory.auto_reset = True
 
     ctx, _obs = memory.read(6)
@@ -137,7 +141,7 @@ def test_memory_write(memory: ut.TrackletMemory) -> None:  # noqa: PLR0915
         {
             KEY_STATE_FLOAT: torch.tensor([4.0, 5.0, 6.0]),
             KEY_STATE_BOOL: torch.tensor([False, True, False]),
-            KEY_STATE_INT: torch.tensor([4, 5, 6]),
+            KEY_STATE_INT: torch.tensor([4, 5, 6], dtype=torch.int32),
             ut.consts.KEY_INDEX: torch.tensor([0, 2, 1], dtype=torch.long),
         },
         batch_size=[3],
@@ -171,15 +175,26 @@ def test_memory_write(memory: ut.TrackletMemory) -> None:  # noqa: PLR0915
         {
             KEY_STATE_FLOAT: torch.tensor([1e-6, 1e-9]),
             KEY_STATE_BOOL: torch.tensor([False, True]),
-            KEY_STATE_INT: torch.tensor([40, 50]),
+            KEY_STATE_INT: torch.tensor([40, 50], dtype=torch.int32),
             ut.consts.KEY_INDEX: torch.tensor([2, 1], dtype=torch.long),
         },
         batch_size=[2],
     )
     cur_tracklets += 2
 
-    obs[ut.consts.KEY_INDEX][1] = 0  # Assign tracklet [1] to detection [0]
-    obs[ut.consts.KEY_ACTIVE][2] = False  # Deactivate tracklet [2]
+    # Clone obs to allow modification
+    obs = obs.clone()
+    # Assign tracklet [1] to detection [0]
+    idx = obs.get(ut.consts.KEY_INDEX)
+    idx[1] = 0
+    obs.set(ut.consts.KEY_INDEX, idx)
+
+    # Deactivate tracklet [2]
+    active = obs.get(ut.consts.KEY_ACTIVE)
+    active[2] = False
+    obs.set(ut.consts.KEY_ACTIVE, active)
+
+    print(f"DEBUG: obs[KEY_INDEX] before write: {obs[ut.consts.KEY_INDEX]}")
 
     ass = memory.write(ctx, obs, new)
     cur_writes += 1
@@ -222,7 +237,7 @@ def test_memory_write(memory: ut.TrackletMemory) -> None:  # noqa: PLR0915
         {
             KEY_STATE_FLOAT: torch.tensor([1e16]),
             KEY_STATE_BOOL: torch.tensor([False]),
-            KEY_STATE_INT: torch.tensor([1_000_000]),
+            KEY_STATE_INT: torch.tensor([1_000_000], dtype=torch.int32),
             ut.consts.KEY_INDEX: torch.tensor([1], dtype=torch.long),
         },
         batch_size=[1],

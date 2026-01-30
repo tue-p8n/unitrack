@@ -38,8 +38,10 @@ def _assert_result_count(ids: Tensor, expected: int):
 
 
 class SimpleTracker(nn.Module):
-    """A wrapper around tracker and memory that uses only one memory for all tracking
-    bookkeeping.
+    """
+    A wrapper around tracker and memory.
+
+    Uses only one memory for all tracking bookkeeping.
 
     Practically, this means that it only supports inference settings where each sequence
     of frames in processed in isolation, e.g. first all frames of sequence 1, then all
@@ -62,13 +64,16 @@ class SimpleTracker(nn.Module):
         *,
         device: torch.types.Device | None = "cpu",
     ) -> None:
-        """Parameters
+        """
+        Initialize the SimpleTracker.
+
+        Parameters
         ----------
-        tracker: MultiStageTracker
+        tracker
             The tracker to be used.
-        memory: TrackletMemory
+        memory
             The memory to be used.
-        device: torch.types.Device
+        device
             The device to be used for the tracker and memory. By default, all buffers
             and parameters (if any) are moved to the CPU.
 
@@ -99,16 +104,19 @@ class SimpleTracker(nn.Module):
 
     @override
     def forward(self, x: TensorDict, n: int, key: int, frame: int) -> TensorDict:
-        """Parameters
+        """
+        Perform tracking step.
+
+        Parameters
         ----------
-        x: TensorDictBase
+        x
             Represents the state of the current iteration.
-        n: int
+        n
             The amount of detections in the current frame, amounts to the length of
             IDs returned
-        key: int
+        key
             The key that identifies the sequence in which the detections have been made
-        frame: int
+        frame
             The current frame number, used to identify the temporal position within
             the sequence.
 
@@ -136,8 +144,13 @@ class SimpleTracker(nn.Module):
 
 
 class _MemoryReadWriter(nn.Module):
-    """Wrapper around a tracklet memory that enables writing and reading in the forward pass.
-    This is necessary because the memory is a stateful module that is not compatible with the functional API.
+    """
+    Wrapper around a tracklet memory.
+
+    Enables writing and reading in the forward pass.
+
+    This is necessary because the memory is a stateful module that is not compatible
+    with the functional API.
     """
 
     def __init__(self, memory: TrackletMemory):
@@ -159,8 +172,10 @@ class _MemoryReadWriter(nn.Module):
 
 
 class StatefulTracker(nn.Module):
-    """A wrapper around tracker and tracklets that enables
-    stateful tracking of objects for every separate sequence.
+    """
+    A wrapper around tracker and tracklets.
+
+    Enables stateful tracking of objects for every separate sequence.
     """
 
     mem_buffers: Mapping[str | int, dict[str, torch.Tensor]]
@@ -180,9 +195,11 @@ class StatefulTracker(nn.Module):
     def _split_persistent_buffers(
         cls, module: nn.Module, prefix: str
     ) -> tuple[dict[str, torch.Tensor], dict[str, torch.Tensor]]:
-        """Split the buffers of a module into two dictionaries: one for
-        buffers that are shared across sequences (persistent) and one for buffers that are
-        unique to every sequence (non-persistent).
+        """
+        Split the buffers of a module into two dictionaries.
+
+        One for buffers that are shared across sequences (persistent) and one for
+        buffers that are unique to every sequence (non-persistent).
         """
         shared = {}
         unique = {}
@@ -226,16 +243,19 @@ class StatefulTracker(nn.Module):
 
     @override
     def forward(self, x: TensorDict, n: int, key: int, frame: int) -> Tensor:
-        """Parameters
+        """
+        Perform tracking step.
+
+        Parameters
         ----------
-        x: TensorDictBase
+        x
             Represents the state of the current iteration.
-        n: int
+        n
             The amount of detections in the current frame, amounts to the length of
             IDs returned
-        key: int
+        key
             The key that identifies the sequence in which the detections have been made
-        frame: int
+        frame
             The current frame number, used to identify the temporal position within
             the sequence.
 

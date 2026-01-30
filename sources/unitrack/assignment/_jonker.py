@@ -3,7 +3,8 @@ from __future__ import annotations
 import numpy as np
 import torch
 import torch.fx
-import typing_extensions as TX
+import typing_extensions as TX  # noqa: N812
+from lap import lapjv  # type: ignore[import-untyped]
 
 from ._base import Assignment
 
@@ -23,19 +24,19 @@ class Jonker(Assignment):
 def jonker_volgenant_assignment(
     cost_matrix: torch.Tensor, threshold: float
 ) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
-    """Perform linear assignment. If possible, an assignment on the diagonal of the
-    matrix is preferred if this assignment has equal cost to the algorithm
-    result.
+    """
+    Perform linear assignment using the Jonker-Volgenant algorithm.
+
+    If possible, an assignment on the diagonal of the matrix is preferred if this
+    assignment has equal cost to the algorithm result.
 
     TODO: PyTorch implementation
     """
-    from lap import lapjv
-
     device = cost_matrix.device
     cost_matrix = cost_matrix.detach().cpu().contiguous()
     cost_matrix = np.ascontiguousarray(cost_matrix).astype(np.float64)
     cost_matrix = np.where(np.isfinite(cost_matrix), cost_matrix, np.inf)
-    matches, unmatched_a, unmatched_b = [], [], []
+    matches = []
 
     # Jonker algorithm, i.e. linear sum assignment (rows) -> (cols)
     _cost, x, y = lapjv(cost_matrix, extend_cost=True, cost_limit=threshold)
@@ -53,22 +54,6 @@ def jonker_volgenant_assignment(
     unmatched_a = torch.from_numpy(np.where(x < 0)[0]).clone().long()
     unmatched_b = torch.from_numpy(np.where(y < 0)[0]).clone().long()
     matches = torch.from_numpy(np.asarray(matches)).clone().long()
-
-    # NOTE: Too verbose. Needs revision
-    # if check_debug_enabled():
-    #     print(f"Jonker-Volgenant Assignment completed with total cost: {cost}")
-    #     for i, j in matches:
-    #         print(f"- match: C {i} -> D {j} (cost: {cost_matrix[i,j]})")
-
-    #     unmatch_min_cost = [
-    #         f"{i} (min. cost: {cost_matrix[i, :].min()})" for i in unmatched_a
-    #     ]
-    #     print(f"Unmatched C: {unmatch_min_cost}")
-
-    #     unmatch_min_cost = [
-    #         f"{i} (min. cost: {cost_matrix[:, i].min()})" for i in unmatched_b
-    #     ]
-    #     print(f"Unmatched D: {unmatch_min_cost}")
 
     return matches.to(device), unmatched_a.to(device), unmatched_b.to(device)
 

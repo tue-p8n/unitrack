@@ -5,7 +5,7 @@ Defines fixtures and ensures testing data is present.
 
 from __future__ import annotations
 
-import typing as T
+import typing as T  # noqa: N812
 from pathlib import Path
 
 import pytest

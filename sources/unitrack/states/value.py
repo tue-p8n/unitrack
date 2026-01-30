@@ -1,9 +1,9 @@
 """Implements memory that stores a Tensor value."""
 
-import typing as T
+import typing as T  # noqa: N812
 
 import torch
-from torch import Tensor, Size
+from torch import Size, Tensor
 
 from .base_state import DEFAULT_STATE_SLOTS, State
 
@@ -15,13 +15,15 @@ def _cast_dtype(dtype: DTypeSpec) -> torch.dtype:
         dtype = getattr(torch, dtype)
     if not isinstance(dtype, torch.dtype):
         msg = f"No a valid data type: {dtype}!"
-        raise ValueError(msg)
+        raise TypeError(msg)
     return dtype
 
 
 class Value(State):
-    """A :class:`.State` that holds memory as-is without any updating logic
-    implemented.
+    """
+    A :class:`.State` that holds memory as-is.
+
+    No updating logic implemented.
     """
 
     memory: Tensor
@@ -33,6 +35,19 @@ class Value(State):
         shape: Size | T.Iterable[int] = (),
         slots: int = DEFAULT_STATE_SLOTS,
     ):
+        """
+        Initialize the Value state.
+
+        Parameters
+        ----------
+        dtype
+            Data type of the value state.
+        shape
+            Shape of the value state.
+        slots
+            Number of slots to allocate for the value state.
+
+        """
         super().__init__()
 
         assert slots > 0, "Number of slots must be positive!"

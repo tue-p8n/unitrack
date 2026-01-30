@@ -15,13 +15,15 @@ def test_lost_stage():
             stage_lost = stages.Lost(max_lost=max_lost)
 
             cs = TensorDict.from_dict(
-                {"_frame": torch.arange(num_frames, dtype=torch.long)}
+                {"_frame": torch.arange(num_frames, dtype=torch.long)},
+                batch_size=[num_frames],
             )
             ds = TensorDict.from_dict(
                 {
                     "_frame": torch.empty((0,), dtype=torch.long),
                     "_index": torch.empty((0,), dtype=torch.long),
-                }
+                },
+                batch_size=[0],
             )
 
             assert len(cs) == num_frames, cs
@@ -32,11 +34,13 @@ def test_lost_stage():
             )
             cs, ds = stage_lost(ctx, cs, ds)
 
-            assert len(cs) == num_frames - max_lost, cs
+            # Calculate expected kept count based on logic: time_lost = t - Tc - dt;
+            # keep if time_lost <= max_lost
+            time_lost = (num_frames - 1) - torch.arange(num_frames) - 1.0
+            expected_count = (time_lost <= max_lost).sum().item()
+
+            assert len(cs) == expected_count, (len(cs), expected_count)
             assert len(ds) == 0, ds
-            assert torch.all(torch.arange(num_frames - max_lost) == cs.get("_frame")), (
-                cs.get("_frame")
-            )
 
 
 @settings(
@@ -53,7 +57,8 @@ def test_association_stage(cs_num: int, ds_num: int):
             "_index": torch.full((cs_num,), -1, dtype=torch.long),
             "_frame": torch.zeros(cs_num, dtype=torch.long),
             "_active": torch.ones(cs_num, dtype=torch.bool),
-        }
+        },
+        batch_size=[cs_num],
     )
     assert len(cs) == cs_num, cs
     x_ds = ds_num * 3.0 + 1
@@ -62,7 +67,8 @@ def test_association_stage(cs_num: int, ds_num: int):
             "x": torch.arange(ds_num).unsqueeze(1).float() * x_ds,
             "categories": torch.ones(ds_num),
             "_index": torch.arange(ds_num, dtype=torch.long),
-        }
+        },
+        batch_size=[ds_num],
     )
     assert len(ds) == ds_num, ds
 

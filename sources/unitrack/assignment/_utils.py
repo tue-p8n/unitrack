@@ -8,8 +8,10 @@ __all__ = ["gather_total_cost"]
 
 
 def gather_total_cost(cost_matrix: Tensor, assignment: Tensor) -> Tensor:
-    """Gather the total cost of an assignment. The amounts to summing all the assigned
-    items from the cost matrix.
+    """
+    Gather the total cost of an assignment.
+
+    The amounts to summing all the assigned items from the cost matrix.
 
     Parameters
     ----------

@@ -1,16 +1,18 @@
-"""This package implements the cost functions that are used to compute the assignment costs between tracklets and
-detections.
+"""
+Implements the cost functions.
+
+Used to compute the assignment costs between tracklets and detections.
 """
 
 from __future__ import annotations
 
-import enum as E
+import enum as E  # noqa: N812
 import itertools
-import typing as T
+import typing as T  # noqa: N812
 from abc import abstractmethod
 
 import torch
-import typing_extensions as TX
+import typing_extensions as TX  # noqa: N812
 from tensordict import TensorDictBase
 from torch import nn
 from torchvision.ops import box_iou
@@ -23,8 +25,10 @@ __all__ = []
 
 
 class Cost(torch.nn.Module):
-    """A cost module computes an assignment cost matrix between detections and
-    tracklets.
+    """
+    A cost module.
+
+    Computes an assignment cost matrix between detections and tracklets.
     """
 
     required_fields: torch.jit.Final[list[str]]
@@ -37,8 +41,10 @@ class Cost(torch.nn.Module):
     @abstractmethod
     @TX.override
     def forward(self, cs: TensorDictBase, ds: TensorDictBase) -> torch.Tensor:
-        """Computes the assignment costs between previous tracklets and current
-        detections.
+        """
+        Compute the assignment costs.
+
+        Between previous tracklets and current detections.
 
         This is an abstract method that should be overwritten.
 
@@ -90,8 +96,10 @@ class FieldCost(Cost):
 
     @abstractmethod
     def compute(self, cs: torch.Tensor, ds: torch.Tensor) -> torch.Tensor:
-        """Computes the assignment costs between previous tracklets and current
-        detections.
+        """
+        Compute the assignment costs.
+
+        Between previous tracklets and current detections.
 
         This is an abstract method that should be overwritten.
 
@@ -116,9 +124,11 @@ class FieldCost(Cost):
 
 
 class GateCost(FieldCost):
-    """Returns a matrix where each tracklet/detection pair that have equal
-    field values are set to `True` and  that have different field values are set to
-    `False`.
+    """
+    Returns a matrix where each tracklet/detection pair is set to `True` or `False`.
+
+    If they have equal field values, they are set to `True`.
+    If they have different field values, they are set to `False`.
     """
 
     @TX.override
@@ -128,8 +138,10 @@ class GateCost(FieldCost):
         return torch.where(gate_matrix == 0, 0.0, torch.inf)
 
     def wrap(self, cost: Cost) -> Reduce:
-        """Wraps another cost function with a gated cost function, using a sum
-        reduction to merge the two costs.
+        """
+        Wrap another cost function with a gated cost function.
+
+        Uses a sum reduction to merge the two costs.
 
         Parameters
         ----------
@@ -190,8 +202,10 @@ def _naive_mask_iou(cs: torch.Tensor, ds: torch.Tensor, eps: float) -> torch.Ten
 
 
 def _pad_degenerate_boxes(boxes: torch.Tensor) -> torch.Tensor:
-    """Adds 1 to the far-coordinate of each box to prevent degeneracy from mask to
-    box conversion.
+    """
+    Add 1 to the far-coordinate of each box.
+
+    This prevents degeneracy from mask to box conversion.
     """
     boxes = boxes.clone()
     boxes[:, 2] += 1
@@ -291,7 +305,7 @@ class Reduce(Cost):
     """A cost reduction module."""
 
     weights: T.Final[list[float]]
-    method: T.Final[method]
+    method: T.Final[Reduction]
 
     def __init__(
         self,
@@ -327,7 +341,7 @@ class Reduce(Cost):
                 return res.prod(dim=0)
             case _:
                 pass
-        msg = f"Reduction method '{method}' not implemented!"
+        msg = f"Reduction method '{self.method}' not implemented!"
         raise NotImplementedError(msg)
 
 
@@ -351,8 +365,10 @@ class CDist(FieldCost):
 
 
 class Cosine(FieldCost):
-    r"""Computes the distance between two fields based on a similarity measure with
-    range $[0,1]$ by computing $1 - \mathrm{CosineSimilarity}(x,y)$.
+    r"""
+    Computes the distance between two fields based on a similarity measure.
+
+    The range is $[0,1]$ by computing $1 - \mathrm{CosineSimilarity}(x,y)$.
     """
 
     def __init__(self, *args, eps: float = DEFAULT_EPS, **kwargs):
@@ -373,8 +389,10 @@ def cosine_distance(a: torch.Tensor, b: torch.Tensor, eps) -> torch.Tensor:
 
 
 class Softmax(FieldCost):
-    r"""Computes the distance between two fields based on a similarity measure with
-    range $[0,1]$ by computing $1 - \mathrm{ReciprocalSoftmax}(x,y)$.
+    r"""
+    Computes the distance between two fields based on a similarity measure.
+
+    The range is $[0,1]$ by computing $1 - \mathrm{ReciprocalSoftmax}(x,y)$.
     """
 
     def __init__(self, *args, **kwargs):

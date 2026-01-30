@@ -1,6 +1,9 @@
-"""Greedy assignment is a simple assignment algorithm that greedily assigns
-detections to tracklets, by selecting the best match at each step. This
-algorithm is not guaranteed to find the optimal solution, but it is fast
+"""
+Greedy assignment is a simple assignment algorithm.
+
+Greedily assigns detections to tracklets, by selecting the best match at each step.
+
+This algorithm is not guaranteed to find the optimal solution, but it is fast
 and simple to implement.
 """
 
@@ -27,15 +30,16 @@ class Greedy(Assignment):
 def greedy_assignment(
     cost_matrix: torch.Tensor,
 ) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
-    """Performs a greedy assignment algorithm on a cost matrix, assigning pairs of elements (rows and columns) based on
-    the minimum cost, with a threshold as the stopping condition.
+    """
+    Perform a greedy assignment algorithm on a cost matrix.
+
+    Assigns pairs of elements (rows and columns) based on the minimum cost,
+    with a threshold as the stopping condition.
 
     Parameters
     ----------
     cost_matrix : torch.Tensor
         A 2D tensor representing the cost matrix.
-    threshold : float
-        The maximum cost allowed for an assignment.
 
     Returns
     -------
@@ -48,15 +52,15 @@ def greedy_assignment(
 
     """
     with cost_matrix.device:
-        N, M = cost_matrix.shape
-        matches = torch.full((min(N, M), 2), -1, dtype=torch.long)
-        unmatched_rows = torch.arange(N, dtype=torch.long)
-        unmatched_cols = torch.arange(M, dtype=torch.long)
+        rows, cols = cost_matrix.shape
+        matches = torch.full((min(rows, cols), 2), -1, dtype=torch.long)
+        unmatched_rows = torch.arange(rows, dtype=torch.long)
+        unmatched_cols = torch.arange(cols, dtype=torch.long)
 
         match_count = 0
         while True:
             min_val, idx = torch.min(cost_matrix.flatten(), dim=0)
-            row, col = idx // M, idx % M
+            row, col = idx // cols, idx % cols
 
             if not torch.isfinite(min_val):
                 break

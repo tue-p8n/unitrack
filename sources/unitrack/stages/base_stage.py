@@ -1,11 +1,13 @@
+"""Base class for stages in a tracking pipeline."""
+
 from __future__ import annotations
 
-import typing as T
+import typing as T  # noqa: N812
 from abc import abstractmethod
 from collections.abc import Iterable
 
 import torch
-import typing_extensions as TX
+import typing_extensions as TX  # noqa: N812
 from tensordict import TensorDictBase
 
 from unitrack.consts import KEY_INDEX
@@ -15,7 +17,8 @@ __all__ = ["Stage"]
 
 
 class Stage(torch.nn.Module):
-    """Base class for stages in a ::class::`..Tracker`.
+    """
+    Base class for stages in a :class:`..Tracker`.
 
     Inputs to a stage are in the context data, or as fields of the detections.
     """
@@ -24,6 +27,15 @@ class Stage(torch.nn.Module):
         self,
         required_fields: Iterable[str] = (),
     ):
+        """
+        Initialize the Stage.
+
+        Parameters
+        ----------
+        required_fields
+            Fields required by this stage.
+
+        """
         super().__init__()
 
         self.required_fields = list(required_fields)
@@ -44,7 +56,10 @@ class Stage(torch.nn.Module):
         raise NotImplementedError
 
     def match(self, cs: TensorDictBase, ds: TensorDictBase) -> None:
-        """Match candidates to detections. Propagates data and IDs from detections to candidates.
+        """
+        Match candidates to detections.
+
+        Propagates data and IDs from detections to candidates.
 
         Parameters
         ----------

@@ -1,5 +1,8 @@
-r"""Implements an object tracker that uses the overlap between consecutive frames' object
-bounding boxes to determine the association between them.
+r"""
+Implements an object tracker.
+
+Uses the overlap between consecutive frames' object bounding boxes to determine the
+association between them.
 """
 
 import typing
@@ -10,16 +13,28 @@ from torch import nn
 
 
 class MinScoreGate(nn.Module):
-    """Selects and filters the input tensor based on the class label and a minimum
-    detection score.
+    """
+    Selects and filters the input tensor.
+
+    Based on the class label and a minimum detection score.
     """
 
     def __init__(
         self,
-        key_class: str,
         key_score: str,
         min_score: float = 0.0,
     ):
+        """
+        Initialize the MinScoreGate module.
+
+        Parameters
+        ----------
+        key_score
+            Key of the score field in the input tensor.
+        min_score
+            Minimum score threshold.
+
+        """
         super().__init__()
 
         self.min_score = min_score
@@ -34,7 +49,7 @@ class MinScoreGate(nn.Module):
         return cs_mask, ds_mask
 
 
-def build_overlap_tracker(
+def build_overlap_tracker(  # noqa: PLR0913
     *,
     key_score: str = "score",
     key_class: str = "class",
@@ -43,6 +58,7 @@ def build_overlap_tracker(
     min_score: float = 0.1,
     class_gate: bool = True,
 ) -> tuple[ut.MultiStageTracker, ut.TrackletMemory]:
+    """Build an overlap-based tracker."""
     # Define the cost function, e.g. the IoU between the bounding boxes
     cost = ut.costs.BoxIoU(field=key_bbox)
     if class_gate:
@@ -53,7 +69,7 @@ def build_overlap_tracker(
         fields=[ut.SelectField(key_score, key_class, key_bbox)],
         stages=[
             ut.stages.Gate(
-                gate=MinScoreGate(min_score=min_score),
+                gate=MinScoreGate(key_score=key_score, min_score=min_score),
                 then=[
                     ut.stages.Association(
                         cost=cost,
