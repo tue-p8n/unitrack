@@ -10,20 +10,17 @@ requires-python = ">=3.12"
 keywords = ["ai", "computer vision", "deep learning"]
 authors = [{ name = "Kurt Stolle", email = "k.h.w.stolle@gmail.com" }]
 classifiers = [
-    "Development Status :: 4 - Beta",
-    "Programming Language :: Python",
-    "Programming Language :: Python :: 3.12",
-    "Programming Language :: Python :: Implementation :: CPython",
+  "Development Status :: 4 - Beta",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: Implementation :: CPython",
 ]
-dependencies = ["unipercept", "laco", "torch", "torchvision", "scipy", "numpy"]
+dependencies = ["torch", "torchvision", "scipy", "numpy", "lap"]
 
 dynamic = ["version"]
 
 [tool.setuptools.dynamic]
 version = { attr = "unitrack.__version__" }
-
-[project.entry-points.configs]
-unitrack = "unitrack.configs"
 
 [tool.setuptools.packages.find]
 where = ["sources"]
@@ -32,77 +29,71 @@ namespaces = true
 
 [project.optional-dependencies]
 dev = [
-    "bandit[toml]",
-    "check-manifest",
-    "ruff",
-    "pre-commit",
-    "pygrep",
-    "isort >= 5.13.2",
-    "refurb",
-    "pylint >= 3.0.3",
-    "pylint_junit",
-    #"shellcheck-py",
-    #"pylint",
-    #"mypy >= 1.9.0",
-    "autoflake",
-    "pydocstyle",
-    #"pyre-check",
-    #"pydocstringformatter",
-    #"pyrefact",
-    #"pyflakes",
-    "mccabe",
-    "hypothesis >= 6.100.1",
-    "pytest >= 8.1.1",
-    "pytest-sugar",
-    "pytest-xdist",
-    "pytest-benchmark",
-    "pytest-cov",
-    "pytest-mock",
-    "pytest-runner",
-    "pytest-github-actions-annotate-failures",
+  "bandit[toml]",
+  "check-manifest",
+  "ruff",
+  "pre-commit",
+  "mccabe",
+  "hypothesis >= 6.100.1",
+  "pytest >= 8.1.1",
+  "pytest-sugar",
+  "pytest-xdist",
+  "pytest-benchmark",
+  "pytest-cov",
+  "pytest-mock",
+  "pytest-runner",
+  "pytest-github-actions-annotate-failures",
 ]
 
 [tool.pyright]
 include = ["sources"]
-pythonVersion = "3.12"
+pythonVersion = "3.13"
 pythonPlatform = "Linux"
 exclude = ["datasets", "dependencies", "output", "**/prototypes"]
 executionEnvironments = [{ root = "sources" }]
 
 [tool.ruff]
-target-version = 'py312'
+target-version = 'py313'
 line-length = 88
 
 [tool.ruff.lint]
 select = [
-    "F",    # flake8
-    "E",    # pycodestyle
-    "B",    # flake8-bugbear
-    "C",    # mccabe
-    "I",    # isort
-    "ARG",  # flake8-unused-arguments
-    "C4",   # flake8-comprehensions
-    "EM",   # flake8-errmsg
-    "ICN",  # flake8-import-conventions
-    "G",    # flake8-logging-format
-    "PGH",  # pygrep-hooks
-    "PIE",  # flake8-pie
-    "PL",   # pylint
-    "PT",   # flake8-pytest-style
-    "PTH",  # flake8-use-pathlib
-    "RET",  # flake8-return
-    "SIM",  # flake8-simplify
-    "T20",  # flake8-print
-    "UP",   # pyupgrade
-    "NPY",  # NumPy specific rules
-    "FURB", # refurb
-    "PYI",  # flake8-pyi
+  "ARG",  # flake8-unused-arguments
+  "B",    # flake8-bugbear
+  "C",    # mccabe
+  "C4",   # flake8-comprehensions
+  "DOC",  # doclint
+  "D",    # pydocstyle
+  "E",    # pycodestyle
+  "EM",   # flake8-errmsg
+  "F",    # pyflakes
+  "FURB", # refurb
+  "G",    # flake8-logging-format
+  "I",    # isort
+  "ICN",  # flake8-import-conventions
+  "N",    # pep8-naming
+  "NPY",  # NumPy specific rules
+  "PERF", # Perflint
+  "PGH",  # pygrep-hooks
+  "PIE",  # flake8-pie
+  "PL",   # pylint
+  "PT",   # flake8-pytest-style
+  "PTH",  # flake8-use-pathlib
+  "PYI",  # flake8-pyi
+  "RUF",  # Ruff-specific rules
+  "RET",  # flake8-return
+  "SIM",  # flake8-simplify
+  "T20",  # flake8-print
+  "TRY",  # Tryceratops
+  "UP",   # pyupgrade
 ]
 ignore = [
-    "PLR2004",  # magic numbers
-    "PLW2901",  # for loop variable overwritten
-    "T201",  # print statement
+  "PLR2004", # magic numbers
+  "PLW2901", # for loop variable overwritten
 ]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["D", "T"]
 
 [tool.ruff.format]
 docstring-code-format = true
