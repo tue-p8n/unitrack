@@ -9,6 +9,7 @@ from ._base import Assignment
 
 __all__ = ["Jonker", "jonker_volgenant_assignment"]
 
+
 class Jonker(Assignment):
     """Uses the Jonker-Volgenant algorithm to solve the linear assignment problem."""
 

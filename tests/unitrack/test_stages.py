@@ -1,5 +1,4 @@
-r"""Tests for ``unitrack.stages``.
-"""
+r"""Tests for ``unitrack.stages``."""
 
 from __future__ import annotations
 
@@ -35,9 +34,9 @@ def test_lost_stage():
 
             assert len(cs) == num_frames - max_lost, cs
             assert len(ds) == 0, ds
-            assert torch.all(
-                torch.arange(num_frames - max_lost) == cs.get("_frame")
-            ), cs.get("_frame")
+            assert torch.all(torch.arange(num_frames - max_lost) == cs.get("_frame")), (
+                cs.get("_frame")
+            )
 
 
 @settings(

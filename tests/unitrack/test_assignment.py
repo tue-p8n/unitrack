@@ -1,6 +1,4 @@
-r"""Tests for ``unitrack.assignment``.
-"""
-
+r"""Tests for ``unitrack.assignment``."""
 
 from __future__ import annotations
 
@@ -65,8 +63,7 @@ def test_assignment_invoke(cost_matrix, solver):
 
 
 def generate_cost(size: float) -> tuple[torch.Tensor, torch.Tensor]:
-    """Generate a random cost matrix and a random matching
-    """
+    """Generate a random cost matrix and a random matching"""
     size = round(size)
     cost_matrix = torch.randn(size, size, dtype=torch.float) * torch.randint(
         -10, 10, (size, size)
@@ -100,8 +97,7 @@ def generate_cost(size: float) -> tuple[torch.Tensor, torch.Tensor]:
     ],
 )
 def test_assignment_known(cost_matrix, solution, solver):
-    """Test if all algorithms can solve the known N x M cost matrix to known N x 2 matches
-    """
+    """Test if all algorithms can solve the known N x M cost matrix to known N x 2 matches"""
     print(f"-- {solver.__class__.__name__} --")
 
     cost_matrix = torch.as_tensor(cost_matrix)

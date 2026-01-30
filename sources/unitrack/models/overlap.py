@@ -1,6 +1,7 @@
 r"""Implements an object tracker that uses the overlap between consecutive frames' object
 bounding boxes to determine the association between them.
 """
+
 import typing
 
 import torch
