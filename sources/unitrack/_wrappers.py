@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import copy
 from collections import defaultdict
-from collections.abc import Mapping
+from collections.abc import Iterator, Mapping
 from typing import TYPE_CHECKING, override
 
 import torch
@@ -15,8 +15,15 @@ if TYPE_CHECKING:
 __all__ = ["SimpleTracker", "StatefulTracker"]
 
 
-def _maybe_read_item(t: type, *args):
-    return (t(arg.item()) if isinstance(arg, Tensor) else arg for arg in args)
+def _maybe_read_item[T: int | float | bool](
+    t: type[T], *args: Tensor | T
+) -> Iterator[T]:
+    for a in args:
+        if isinstance(a, Tensor):
+            yield t(a.item())
+        else:
+            assert isinstance(a, t), type(a)
+            yield a
 
 
 def _assert_result_count(ids: Tensor, expected: int):
@@ -36,13 +43,18 @@ class SimpleTracker(nn.Module):
     bookkeeping.
 
     Practically, this means that it only supports inference settings where each sequence
-    of frames in processed in isolation, e.g. first all frames of sequence 1, then all frames
-    of sequence 2, etc.
+    of frames in processed in isolation, e.g. first all frames of sequence 1, then all
+    frames of sequence 2, etc.
 
     This should be preferred over :class:`StatefulTracker` where applicable, because
     this removes the need to manage multiple memory instances of the tracklet state
     buffers.
     """
+
+    tracker: MultiStageTracker
+    memory: TrackletMemory
+    device: torch.types.Device | None
+    last_key: int | None
 
     def __init__(
         self,
@@ -77,30 +89,7 @@ class SimpleTracker(nn.Module):
             self.memory = self.memory.to(self.device)
             self.tracker = self.tracker.to(self.device)
 
-    def read_storage(
-        self, key: int
-    ) -> tuple[
-        dict[str, torch.Tensor], dict[str, torch.Tensor], dict[str, torch.Tensor]
-    ]:
-        if self.memory_storage is None:
-            prefix = "memory"
-            memory = self.memory_delegate.memory
-            params = dict(memory.named_parameters(prefix=prefix))
-            buffers_shared, buffers_unique = _split_persistent_buffers(
-                memory, prefix=prefix
-            )
-            buffers_unique_default = copy.deepcopy(buffers_unique)
-            buffers_unique_map = defaultdict(
-                lambda: copy.deepcopy(buffers_unique_default)
-            )
-
-            self.memory_storage = (params, buffers_shared, buffers_unique_map)
-        else:
-            params, buffers_shared, buffers_unique_map = self.memory_storage
-
-        return params, buffers_shared, buffers_unique_map[key]
-
-    @torch.compiler.disable()
+    @torch.compiler.disable()  # pyright: ignore[reportUnknownMemberType, reportUntypedFunctionDecorator]
     def _reset_on_new(self, key: int) -> bool:
         if self.last_key != key:
             self.memory.reset()
@@ -110,7 +99,7 @@ class SimpleTracker(nn.Module):
         return False
 
     @override
-    def forward(self, x: TensorDict, n: int, key: int, frame: int) -> Tensor:
+    def forward(self, x: TensorDict, n: int, key: int, frame: int) -> TensorDict:
         """
         Parameters
         ----------
@@ -132,16 +121,15 @@ class SimpleTracker(nn.Module):
         """
 
         key, frame = _maybe_read_item(int, key, frame)
-        self._reset_on_new(key)
+        _ = self._reset_on_new(key)
 
         state_ctx, state_obs = self.memory.read(frame)
         state_obs, new = self.tracker(state_ctx, state_obs, x, n)
 
-        ids = self.memory.write(state_ctx, state_obs, new)
+        return self.memory.write_with_observe(state_ctx, state_obs, new)
 
-        _assert_result_count(ids, n)
-
-        return ids
+    if TYPE_CHECKING:
+        __call__ = forward  # pyright: ignore[reportUnannotatedClassAttribute]
 
 
 ####################
@@ -167,7 +155,8 @@ class _MemoryReadWriter(nn.Module):
     ):
         if write:
             ctx, obs, new = transaction
-            return self.memory.write(ctx, obs, new)
+            return self.memory.write_with_observe(ctx, obs, new)
+
         (frame,) = transaction
         return self.memory.read(frame)
 

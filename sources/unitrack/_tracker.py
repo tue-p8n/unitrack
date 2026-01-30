@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import typing as T
+from collections.abc import Sequence
 
 import torch
 from tensordict import TensorDict, TensorDictBase
@@ -23,7 +24,7 @@ class SelectField(TensorDictModule):
         in_keys = []
         in_keys.extend(keys)
         in_keys.extend(keys_mapping.keys())
-        
+
         out_keys = []
         out_keys.extend(keys)
         out_keys.extend(keys_mapping.values())
@@ -31,13 +32,17 @@ class SelectField(TensorDictModule):
         super().__init__(lambda *args: args, in_keys=in_keys, out_keys=out_keys)
 
 
-
 class MultiStageTracker(nn.Module):
     """
     Multi-stage tracker that applies a cascade of stages to a set of detections.
     """
 
-    def __init__(self, fields: T.Sequence[TensorDictModuleBase], stages: T.Sequence[Stage]):
+    fields: nn.ModuleList  # [TensorDictModuleBase]
+    stages: nn.ModuleList  # [Stage]
+
+    def __init__(
+        self, fields: Sequence[TensorDictModuleBase], stages: Sequence[Stage]
+    ) -> None:
         super().__init__()
 
         assert len(stages) > 0
@@ -45,6 +50,7 @@ class MultiStageTracker(nn.Module):
         self.fields = nn.ModuleList(fields)
         self.stages = nn.ModuleList(stages)
 
+    @T.override
     def forward(
         self,
         ctx: TensorDictBase,
@@ -53,7 +59,8 @@ class MultiStageTracker(nn.Module):
         num: int,
     ) -> tuple[TensorDictBase, TensorDictBase]:
         """
-        Perform tracking, returns a tuple of updated observations and the field-values of new tracklets.
+        Perform tracking, returns a tuple of updated observations and the field-values
+        of new tracklets.
 
 
         Parameters
@@ -78,7 +85,8 @@ class MultiStageTracker(nn.Module):
         """
 
         if inp.device is None:
-            raise ValueError("Missing `device` attribute on inputs")
+            msg = "Missing `device` attribute on inputs"
+            raise ValueError(msg)
 
         # Create a dict of new tracklet candidates by passing the input state to
         # each field
@@ -89,7 +97,7 @@ class MultiStageTracker(nn.Module):
             device=inp.device,
         )
 
-        obs = obs.to(device=inp.device)
+        obs = obs.to(device=inp.device)  # pyright: ignore[reportUnknownMemberType]
 
         for field in self.fields:
             field(inp, tensordict_out=new)
@@ -98,8 +106,8 @@ class MultiStageTracker(nn.Module):
         assert new.device is not None
 
         # Candidates for matching are all active observed tracklets
-        active_mask = obs.get(KEY_ACTIVE)
-        obs_candidates = obs._get_sub_tensordict(active_mask)
+        active_mask = T.cast(torch.Tensor, obs.get(KEY_ACTIVE))
+        obs_candidates = T.cast(TensorDictBase, obs._get_sub_tensordict(active_mask))
         for stage in self.stages:
             if obs_candidates.batch_size[0] == 0 or new.batch_size[0] == 0:
                 break

@@ -5,6 +5,7 @@ A tracklet represents a generic collection of states, such as objects in a scene
 """
 
 import typing as T
+from enum import StrEnum
 
 import torch
 from tensordict import TensorDict, TensorDictBase
@@ -16,6 +17,14 @@ from .states import DEFAULT_STATE_SLOTS, State
 from .states import Value as ValueState
 
 __all__ = ["TrackletMemory"]
+
+
+class TrackletMemoryWriteReturnType(StrEnum):
+    """Enum for the return type of the TrackletMemory write method."""
+
+    NONE = "none"
+    ID = "id"
+    STATE = "state"
 
 
 class TrackletMemory(nn.Module):
@@ -126,7 +135,10 @@ class TrackletMemory(nn.Module):
 
     @torch.no_grad()
     def write(
-        self, ctx: TensorDictBase, obs: TensorDictBase, new: TensorDictBase
+        self,
+        ctx: TensorDictBase,
+        obs: TensorDictBase,
+        new: TensorDictBase,
     ) -> Tensor:
         """
         Apply the updated observations and new detections to the tracklets states.
@@ -165,18 +177,46 @@ class TrackletMemory(nn.Module):
             The length $N$ is equal to the amount of positive indices at the
             key `KEY_INDEX` in the `obs` and `new` arguments.
         """
+        return T.cast(
+            Tensor,
+            self._write(ctx, obs, new, return_type=TrackletMemoryWriteReturnType.ID),
+        )
 
-        assert KEY_INDEX in obs.keys(), f"Key {KEY_INDEX} not found in obs keys."
-        assert KEY_INDEX in new.keys(), f"Key {KEY_INDEX} not found in new keys."
+    @torch.no_grad()
+    def write_with_observe(
+        self,
+        ctx: TensorDictBase,
+        obs: TensorDictBase,
+        new: TensorDictBase,
+    ) -> TensorDictBase:
+        """
+        Variant of :meth:`write` that also returns the observed state of the tracklets.
+        """
+        return T.cast(
+            TensorDictBase,
+            self._write(ctx, obs, new, return_type=TrackletMemoryWriteReturnType.STATE),
+        )
+
+    def _write(
+        self,
+        ctx: TensorDictBase,
+        obs: TensorDictBase,
+        new: TensorDictBase,
+        *,
+        return_type: TrackletMemoryWriteReturnType = TrackletMemoryWriteReturnType.ID,
+    ) -> Tensor | TensorDictBase | None:
+        assert KEY_INDEX in obs.keys(), f"Key {KEY_INDEX} not found in obs keys."  # noqa: SIM118
+        assert KEY_INDEX in new.keys(), f"Key {KEY_INDEX} not found in new keys."  # noqa: SIM118
 
         # Evolve the memory states
         frame = int(ctx.get(KEY_FRAME).item())
         self.frame.fill_(frame)
         self.write_count += 1
 
-        obs_ids = self._update_states(obs, frame=frame)
-        new_ids = self._extend_states(new, frame=frame)
+        obs_track_idxs, obs_ids = self._update_states(obs, frame=frame)
+        new_track_idxs, new_ids = self._extend_states(new, frame=frame)
 
+        # Apply selection and reordering based on the indices provided in obs and new
         idx_obs = obs.get(KEY_INDEX)
         obs_mask = idx_obs >= 0
         idx_obs_valid = idx_obs[obs_mask]
@@ -191,12 +231,10 @@ class TrackletMemory(nn.Module):
         idx_new = new.get(KEY_INDEX)
         idx_new_amt = idx_new.numel()
         if idx_new_amt > 0 and idx_new.min() < 0:
-            msg = "New detections contain negative indices!" f"Got: {idx_new.tolist()}"
+            msg = f"New detections contain negative indices!Got: {idx_new.tolist()}"
             raise ValueError(msg)
         if idx_new.unique().numel() != idx_new.numel():
-            msg = (
-                "Indices of new detections are not unique! " f"Got: {idx_new.tolist()}"
-            )
+            msg = f"Indices of new detections are not unique! Got: {idx_new.tolist()}"
             raise ValueError(msg)
 
         if check_debug_enabled():
@@ -218,8 +256,7 @@ class TrackletMemory(nn.Module):
             raise ValueError(msg)
         if idx_all_amt > 0 and idx_all.min() != 0:
             msg = (
-                "Indices must start at 0! Got: "
-                f"{idx_all.min()} for {idx_all.tolist()}"
+                f"Indices must start at 0! Got: {idx_all.min()} for {idx_all.tolist()}"
             )
             raise ValueError(msg)
         if idx_all_amt > 0 and idx_all.max() != idx_all_amt - 1:
@@ -229,24 +266,52 @@ class TrackletMemory(nn.Module):
             )
             raise ValueError(msg)
 
-        # Create the return value: a list of IDs to assign to detections in the next
+        # A list of IDs to assign to detections in the next
         # frame.
+        result_idx = torch.full_like(idx_all, -1)
         result_ids = torch.zeros_like(idx_all)
         if idx_obs_amt > 0:
+            result_idx[idx_obs_valid] = obs_track_idxs[obs_mask]
             result_ids[idx_obs_valid] = obs_ids[obs_mask]
         if idx_new_amt > 0:
+            result_idx[idx_new] = new_track_idxs
             result_ids[idx_new] = new_ids
 
-        assert torch.all(result_ids > 0), f"IDs must be positive! Got: {result_ids}"
+        assert torch.all(result_idx >= 0), result_idx
+        assert torch.all(result_ids > 0), result_ids
 
-        return result_ids
+        # Return value
+        match return_type:
+            case TrackletMemoryWriteReturnType.ID:
+                return result_ids
+            case TrackletMemoryWriteReturnType.STATE:
+                return TensorDict(
+                    {
+                        id: state.observe(result_idx)
+                        for id, state in self.states.items()
+                    },
+                    batch_size=idx_all.shape[0],
+                    device=self.frame.device,
+                )
+            case return_none:
+                assert return_none == TrackletMemoryWriteReturnType.NONE
+                return None
 
-    def _update_states(self, obs: TensorDictBase, frame: int) -> Tensor:
+    def _update_states(self, obs: TensorDictBase, frame: int) -> tuple[Tensor, Tensor]:
+        """Update the states with the evolved observations.
+
+        Returns
+        -------
+        Tuple[Tensor, Tensor]
+            A tuple of (track indices, track IDs) of the updated tracklets.
+        """
         num = obs.batch_size[0]
         if num <= 0:
-            return torch.empty((0,), dtype=torch.long, device=self.frame.device)
+            empty = torch.empty((0,), dtype=torch.long, device=self.frame.device)
+            return empty, empty.clone()
 
-        idxs = obs.get(KEY_INDEX)
+        detect_idxs = obs.get(KEY_INDEX)  # Detection indices assigned to tracklets
+        track_idxs = self.index_range[self.index_mask]  # Index in the memory
 
         # Iterate over the states and update them with the values of the evolved
         # observations.
@@ -255,21 +320,29 @@ class TrackletMemory(nn.Module):
             if id == KEY_FRAME:
                 # Update the frame to the current frame for all observations that
                 # are active, otherwise keep the previous frame.
-                upd = torch.where(~(idxs >= 0), obs.get(KEY_FRAME), frame)
+                upd = torch.where(~(detect_idxs >= 0), obs.get(KEY_FRAME), frame)
             else:
                 upd = T.cast(Tensor, obs.get(id))
             try:
-                state.update(self.index_range[self.index_mask], upd)
+                state.update(track_idxs, upd)
             except ValueError as e:
                 msg = f"Could not update state {id!r}"
                 raise ValueError(msg) from e
 
-        return obs.get(KEY_ID)
+        return track_idxs, obs.get(KEY_ID)
 
-    def _extend_states(self, new: TensorDictBase, frame: int) -> Tensor:
+    def _extend_states(self, new: TensorDictBase, frame: int) -> tuple[Tensor, Tensor]:
+        """Exctend the states with new detections, creating new tracklets.
+
+        Returns
+        -------
+        Tuple[Tensor, Tensor]
+            A tuple of (track indices, track IDs) of the newly created tracklets.
+        """
         num = new.batch_size[0]
         if num <= 0:
-            return torch.empty((0,), dtype=torch.long, device=self.frame.device)
+            empty = torch.empty((0,), dtype=torch.long, device=self.frame.device)
+            return empty, empty.clone()
 
         ids_start = T.cast(int, self.tracklet_count.item()) + 1
         ids_end = ids_start + num
@@ -324,7 +397,7 @@ class TrackletMemory(nn.Module):
         # Update the tracklet count to the last (maximum) ID of the newly made tracklets
         self.tracklet_count.fill_(ids.max())
 
-        return ids
+        return ext_index, ids
 
     @torch.no_grad()
     def read(self, frame: int) -> tuple[TensorDictBase, TensorDictBase]:
@@ -385,9 +458,15 @@ class TrackletMemory(nn.Module):
             requires_grad=False,
         )
 
-        # Forget observations that have been inactive ("lost") for too long.
+        # Compute which tracklets have been lost for too long
         time_lost = frame - obs.get(KEY_FRAME) - 1
         lost_mask = time_lost > self.max_lost
+
+        # Reset the states of the lost tracklets
+        for state in self.states.values():
+            state.reset(obs_index[lost_mask])
+
+        # Continue with the active tracklets only
         obs = obs._get_sub_tensordict(~lost_mask)
         lost_index = obs_index[lost_mask]
         self.index_mask[lost_index] = False
