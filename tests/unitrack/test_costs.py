@@ -1,6 +1,4 @@
-r"""
-Tests for ``unitrack.costs``.
-"""
+r"""Tests for ``unitrack.costs``."""
 
 from __future__ import annotations
 
@@ -10,11 +8,12 @@ from hypothesis import strategies as st
 from tensordict import TensorDict
 from unitrack import costs
 
+KEY_GATED_FIELD = "gated_field"
+
 
 @settings(deadline=None)
 @given(cs_num=st.integers(0, 4), ds_num=st.integers(0, 4))
 def test_gate_cost(cs_num, ds_num):
-    KEY_GATED_FIELD = "gated_field"
     cs = TensorDict.from_dict({KEY_GATED_FIELD: torch.arange(cs_num)})
     assert len(cs) == cs_num, cs
 
@@ -35,11 +34,12 @@ def test_gate_cost(cs_num, ds_num):
     assert torch.all(gate_matrix[~gate_mask] == torch.inf)
 
 
+KEY_VALUE = "foo_bar"
+
+
 @settings(deadline=None)
 @given(cs_num=st.integers(0, 10), ds_num=st.integers(0, 10))
 def test_cdist_cost(cs_num: int, ds_num: int):
-    KEY_VALUE = "foo_bar"
-
     x_cs = cs_num * 2.0
     cs = TensorDict.from_dict(
         {KEY_VALUE: torch.arange(cs_num).unsqueeze(1).float() * x_cs}
@@ -63,8 +63,10 @@ def test_cdist_cost(cs_num: int, ds_num: int):
             assert cost_matrix[cs_i, ds_i] == euclidean_distance
 
 
+KEY_MASK = "my_mask"
+
+
 def test_mask_iou():
-    KEY_MASK = "my_mask"
     cs_x = torch.tensor(
         [
             [

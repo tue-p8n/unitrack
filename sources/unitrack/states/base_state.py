@@ -6,10 +6,10 @@ from abc import abstractmethod
 import torch
 from torch import Tensor
 
-__all__ = ["State", "StateValue", "DEFAULT_STATE_SLOTS"]
+__all__ = ["DEFAULT_STATE_SLOTS", "State", "StateValue"]
 
 
-DEFAULT_STATE_SLOTS: T.Final[int] = int(1024 * 4)
+DEFAULT_STATE_SLOTS: T.Final[int] = 1024 * 4
 
 
 type StateValue = Tensor | dict[str, Tensor]
@@ -20,8 +20,7 @@ class State(torch.nn.Module):
         super().__init__(**kwargs)
 
     def _check_compatible(self, memory: Tensor, *, raises: bool = True) -> bool:
-        """
-        Check if the given memory is compatible with the state.
+        """Check if the given memory is compatible with the state.
 
         Parameters
         ----------
@@ -39,6 +38,7 @@ class State(torch.nn.Module):
         ValueError
             If the memory tensor is incompatible with the state.
             Only raised if :param:`raises` is True.
+
         """
         if memory.dtype != self.dtype:
             if raises:
@@ -55,86 +55,71 @@ class State(torch.nn.Module):
     @property
     @abstractmethod
     def slots(self) -> int:
-        """
-        The number of slots in the state.
-        """
+        """The number of slots in the state."""
         raise NotImplementedError
 
     @slots.setter
     @abstractmethod
     def slots(self, slots: int) -> None:
-        """
-        Set the number of slots in the state.
-        """
+        """Set the number of slots in the state."""
         raise NotImplementedError
 
     @property
     @abstractmethod
     def shape(self) -> T.Iterable[int]:
-        """
-        The shape of the state.
-        """
+        """The shape of the state."""
         raise NotImplementedError
 
     @property
     @abstractmethod
     def dtype(self) -> torch.dtype:
-        """
-        The data type of the state.
-        """
+        """The data type of the state."""
         raise NotImplementedError
 
     @abstractmethod
     def update(self, index: Tensor, update: StateValue) -> None:
-        """
-        Update the current state from the given update tensor.
-        """
+        """Update the current state from the given update tensor."""
         raise NotImplementedError
 
     @abstractmethod
     def extend(self, index: Tensor, extend: StateValue) -> None:
-        """
-        Extend the current state from the given extend tensor.
-        """
+        """Extend the current state from the given extend tensor."""
         raise NotImplementedError
 
     @abstractmethod
     def observe(self, index: Tensor) -> StateValue:
-        """
-        Observe the current state.
+        """Observe the current state.
 
         Returns
         -------
             State value
+
         """
         raise NotImplementedError
 
     @abstractmethod
     def reset(self, index: Tensor):
-        """
-        Reset the state to its initial value. Essentially sets the buffers to their initial value.
-        """
-
+        """Reset the state to its initial value. Essentially sets the buffers to their initial value."""
         raise NotImplementedError
 
     @abstractmethod
     def read(self, index: Tensor) -> dict[str, Tensor]:
-        """
-        Read the current state.
+        """Read the current state.
 
         Returns
         -------
             State value
+
         """
         raise NotImplementedError
 
     def evolve(self, index: Tensor, delta: Tensor):
-        """
-        Evolve the state by the given delta. This is a no-op by default.
+        """Evolve the state by the given delta. This is a no-op by default.
 
         Parameters
         ----------
         delta
             The time difference to evolve the state by.
+
         """
         return self.observe(index)

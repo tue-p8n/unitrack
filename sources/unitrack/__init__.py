@@ -1,5 +1,4 @@
-"""
-UniTrack
+r"""UniTrack.
 ========
 
 This module implements a tracker algorithm that maps detections to tracklets.

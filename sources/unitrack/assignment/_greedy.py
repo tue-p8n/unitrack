@@ -1,5 +1,4 @@
-"""
-Greedy assignment is a simple assignment algorithm that greedily assigns 
+"""Greedy assignment is a simple assignment algorithm that greedily assigns
 detections to tracklets, by selecting the best match at each step. This
 algorithm is not guaranteed to find the optimal solution, but it is fast
 and simple to implement.
@@ -16,9 +15,7 @@ __all__ = ["Greedy", "greedy_assignment"]
 
 
 class Greedy(Assignment):
-    """
-    See :func:`.greedy_assignment` for details.
-    """
+    """See :func:`.greedy_assignment` for details."""
 
     def _assign(
         self, cost_matrix: torch.Tensor
@@ -30,8 +27,7 @@ class Greedy(Assignment):
 def greedy_assignment(
     cost_matrix: torch.Tensor,
 ) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
-    """
-    Performs a greedy assignment algorithm on a cost matrix, assigning pairs of elements (rows and columns) based on
+    """Performs a greedy assignment algorithm on a cost matrix, assigning pairs of elements (rows and columns) based on
     the minimum cost, with a threshold as the stopping condition.
 
     Parameters

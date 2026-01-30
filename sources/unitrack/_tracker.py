@@ -16,9 +16,7 @@ __all__ = ["MultiStageTracker", "SelectField"]
 
 
 class SelectField(TensorDictModule):
-    """
-    Select fields from some input TensorDict and copy them to the output TensorDict.
-    """
+    """Select fields from some input TensorDict and copy them to the output TensorDict."""
 
     def __init__(self, *keys: str, **keys_mapping: str):
         in_keys = []
@@ -33,9 +31,7 @@ class SelectField(TensorDictModule):
 
 
 class MultiStageTracker(nn.Module):
-    """
-    Multi-stage tracker that applies a cascade of stages to a set of detections.
-    """
+    """Multi-stage tracker that applies a cascade of stages to a set of detections."""
 
     fields: nn.ModuleList  # [TensorDictModuleBase]
     stages: nn.ModuleList  # [Stage]
@@ -58,8 +54,7 @@ class MultiStageTracker(nn.Module):
         inp: TensorDictBase,
         num: int,
     ) -> tuple[TensorDictBase, TensorDictBase]:
-        """
-        Perform tracking, returns a tuple of updated observations and the field-values
+        """Perform tracking, returns a tuple of updated observations and the field-values
         of new tracklets.
 
 
@@ -82,8 +77,8 @@ class MultiStageTracker(nn.Module):
         -------
         Tuple[TensorDict, TensorDict]
             Updated observations and field-values of new tracklets.
-        """
 
+        """
         if inp.device is None:
             msg = "Missing `device` attribute on inputs"
             raise ValueError(msg)
@@ -116,9 +111,7 @@ class MultiStageTracker(nn.Module):
         obs_unmatched_mask = obs.get(KEY_INDEX) < 0
 
         if check_debug_enabled():
-            print(
-                f"TRACKER COMPLETE: remaining {obs_unmatched_mask.int().sum().item()}/{len(obs)} unmatched observations"
-            )
+            pass
         obs[KEY_ACTIVE] = torch.where(obs_unmatched_mask, False, True)
         # obs.set_at_(KEY_ACTIVE, False, obs_unmatched_mask)
         # obs.set_at_(KEY_ACTIVE, True, ~obs_unmatched_mask)

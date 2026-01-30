@@ -1,5 +1,4 @@
-r"""
-Common set-up for all tests.
+r"""Common set-up for all tests.
 
 Defines fixtures and ensures testing data is present.
 """

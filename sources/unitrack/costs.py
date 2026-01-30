@@ -1,5 +1,4 @@
-"""
-This package implements the cost functions that are used to compute the assignment costs between tracklets and
+"""This package implements the cost functions that are used to compute the assignment costs between tracklets and
 detections.
 """
 
@@ -24,8 +23,7 @@ __all__ = []
 
 
 class Cost(torch.nn.Module):
-    """
-    A cost module computes an assignment cost matrix between detections and
+    """A cost module computes an assignment cost matrix between detections and
     tracklets.
     """
 
@@ -39,8 +37,7 @@ class Cost(torch.nn.Module):
     @abstractmethod
     @TX.override
     def forward(self, cs: TensorDictBase, ds: TensorDictBase) -> torch.Tensor:
-        """
-        Computes the assignment costs between previous tracklets and current
+        """Computes the assignment costs between previous tracklets and current
         detections.
 
         This is an abstract method that should be overwritten.
@@ -51,9 +48,11 @@ class Cost(torch.nn.Module):
             Candidate observations (N).
         ds
             Detections (M).
+
         Returns
         -------
             Cost matrix (N x M).
+
         """
         raise NotImplementedError
 
@@ -66,10 +65,7 @@ class FieldCost(Cost):
         super().__init__(required_fields=[field])
 
         self.field = field
-        if select is None:
-            select = []
-        else:
-            select = list(select)
+        select = [] if select is None else list(select)
         self.select = select
 
     def get_field(
@@ -94,8 +90,7 @@ class FieldCost(Cost):
 
     @abstractmethod
     def compute(self, cs: torch.Tensor, ds: torch.Tensor) -> torch.Tensor:
-        """
-        Computes the assignment costs between previous tracklets and current
+        """Computes the assignment costs between previous tracklets and current
         detections.
 
         This is an abstract method that should be overwritten.
@@ -110,6 +105,7 @@ class FieldCost(Cost):
         Returns
         -------
             Cost matrix (N x M).
+
         """
         ...
 
@@ -120,8 +116,7 @@ class FieldCost(Cost):
 
 
 class GateCost(FieldCost):
-    """
-    Returns a matrix where each tracklet/detection pair that have equal
+    """Returns a matrix where each tracklet/detection pair that have equal
     field values are set to `True` and  that have different field values are set to
     `False`.
     """
@@ -133,8 +128,7 @@ class GateCost(FieldCost):
         return torch.where(gate_matrix == 0, 0.0, torch.inf)
 
     def wrap(self, cost: Cost) -> Reduce:
-        """
-        Wraps another cost function with a gated cost function, using a sum
+        """Wraps another cost function with a gated cost function, using a sum
         reduction to merge the two costs.
 
         Parameters
@@ -146,6 +140,7 @@ class GateCost(FieldCost):
         -------
         Reduction
             The wrapped cost function.
+
         """
         return Reduce([cost, self], Reduction.SUM)
 
@@ -158,9 +153,7 @@ DEFAULT_EPS: T.Final = 1e-5
 
 
 class MaskIoU(FieldCost):
-    """
-    Computes IoU cost matrix between two sets of bitmasks.
-    """
+    """Computes IoU cost matrix between two sets of bitmasks."""
 
     eps: torch.jit.Final[float]
 
@@ -197,8 +190,7 @@ def _naive_mask_iou(cs: torch.Tensor, ds: torch.Tensor, eps: float) -> torch.Ten
 
 
 def _pad_degenerate_boxes(boxes: torch.Tensor) -> torch.Tensor:
-    """
-    Adds 1 to the far-coordinate of each box to prevent degeneracy from mask to
+    """Adds 1 to the far-coordinate of each box to prevent degeneracy from mask to
     box conversion.
     """
     boxes = boxes.clone()
@@ -211,10 +203,7 @@ def _pad_degenerate_boxes(boxes: torch.Tensor) -> torch.Tensor:
 def _box_diou_iou(
     boxes1: torch.Tensor, boxes2: torch.Tensor, eps: float, dtype=torch.float32
 ) -> tuple[torch.Tensor, torch.Tensor]:
-    """
-    IoU with penalized center-distance
-    """
-
+    """IoU with penalized center-distance."""
     iou = box_iou(boxes1, boxes2)
     lti = torch.min(boxes1[:, None, :2], boxes2[:, :2])
     rbi = torch.max(boxes1[:, None, 2:], boxes2[:, 2:])
@@ -270,9 +259,7 @@ def _complete_box_iou(
 
 
 class Weighted(Cost):
-    """
-    A weighted cost module.
-    """
+    """A weighted cost module."""
 
     weight: torch.Tensor
 
@@ -291,9 +278,7 @@ class Weighted(Cost):
 
 
 class Reduction(E.StrEnum):
-    """
-    Reduction method for :class:`.Reduce` cost module.
-    """
+    """Reduction method for :class:`.Reduce` cost module."""
 
     SUM = E.auto()
     MEAN = E.auto()
@@ -303,9 +288,7 @@ class Reduction(E.StrEnum):
 
 
 class Reduce(Cost):
-    """
-    A cost reduction module.
-    """
+    """A cost reduction module."""
 
     weights: T.Final[list[float]]
     method: T.Final[method]
@@ -354,9 +337,7 @@ class Reduce(Cost):
 
 
 class CDist(FieldCost):
-    """
-    Computes a distance between two fields using ``torch.cdist``.
-    """
+    """Computes a distance between two fields using ``torch.cdist``."""
 
     p: T.Final[float]
 
@@ -370,8 +351,7 @@ class CDist(FieldCost):
 
 
 class Cosine(FieldCost):
-    r"""
-    Computes the distance between two fields based on a similarity measure with
+    r"""Computes the distance between two fields based on a similarity measure with
     range $[0,1]$ by computing $1 - \mathrm{CosineSimilarity}(x,y)$.
     """
 
@@ -393,8 +373,7 @@ def cosine_distance(a: torch.Tensor, b: torch.Tensor, eps) -> torch.Tensor:
 
 
 class Softmax(FieldCost):
-    r"""
-    Computes the distance between two fields based on a similarity measure with
+    r"""Computes the distance between two fields based on a similarity measure with
     range $[0,1]$ by computing $1 - \mathrm{ReciprocalSoftmax}(x,y)$.
     """
 
@@ -415,9 +394,7 @@ def softmax_distance(a: torch.Tensor, b: torch.Tensor) -> torch.Tensor:
 
 
 class RadialBasis(FieldCost):
-    r"""
-    Computes the radial basis function (RBF) between two fields.
-    """
+    r"""Computes the radial basis function (RBF) between two fields."""
 
     @TX.override
     def compute(self, x: torch.Tensor, y: torch.Tensor) -> torch.Tensor:

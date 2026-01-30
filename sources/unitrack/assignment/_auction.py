@@ -1,5 +1,4 @@
-r"""
-Implements the Auction algorithm for solving a linear assignment problem.
+r"""Implements the Auction algorithm for solving a linear assignment problem.
 
 The Auction algorithm is an iterative algorithm that solves the linear assignment
 problem by simulating an auction process.
@@ -19,19 +18,17 @@ __all__ = ["Auction", "auction_assignment"]
 
 
 class Auction(Assignment):
-    """
-    Solves the linear assignment over a cost matrix using an auction algorithm.
-    """
+    """Solves the linear assignment over a cost matrix using an auction algorithm."""
 
     bid_size: T.Final[float]
 
     def __init__(self, bid_size=0.05, *args, **kwargs):
-        """
-        Parameters
+        """Parameters
         ----------
         bid_size, optional
             Step size of auction bids, which should be tuned according to the expected
             domain of the cost matrix.
+
         """
         super().__init__(*args, **kwargs)
 

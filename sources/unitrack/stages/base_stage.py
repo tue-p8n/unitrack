@@ -15,8 +15,7 @@ __all__ = ["Stage"]
 
 
 class Stage(torch.nn.Module):
-    """
-    Base class for stages in a ::class::`..Tracker`.
+    """Base class for stages in a ::class::`..Tracker`.
 
     Inputs to a stage are in the context data, or as fields of the detections.
     """
@@ -45,8 +44,7 @@ class Stage(torch.nn.Module):
         raise NotImplementedError
 
     def match(self, cs: TensorDictBase, ds: TensorDictBase) -> None:
-        """
-        Match candidates to detections. Propagates data and IDs from detections to candidates.
+        """Match candidates to detections. Propagates data and IDs from detections to candidates.
 
         Parameters
         ----------
@@ -54,12 +52,10 @@ class Stage(torch.nn.Module):
             Candidates
         ds
             Detections
+
         """
         if check_debug_enabled():
-            print(
-                f" - matched {cs.batch_size[0]} candidates to "
-                f"{ds.batch_size[0]} detections"
-            )
+            pass
 
         cs_keys = T.cast(list[str], cs.keys())
         ds_keys = T.cast(list[str], ds.keys())

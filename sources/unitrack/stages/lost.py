@@ -1,5 +1,4 @@
-r"""
-Implements the `Lost` stage, which filters out candidates that have been lost for more
+r"""Implements the `Lost` stage, which filters out candidates that have been lost for more
 than a configurable maximum amount of time.
 """
 
@@ -16,8 +15,7 @@ __all__ = ["Lost"]
 
 
 class Lost(Stage):
-    """
-    Stage that filters out candidates that have been lost for less than a
+    """Stage that filters out candidates that have been lost for less than a
     configurable maximum amount.
 
     This is useful to remove candidates that have been lost for too long without
@@ -35,13 +33,12 @@ class Lost(Stage):
     max_lost: T.Final[int]
 
     def __init__(self, max_lost: int):
-        """
-        Parameters
+        """Parameters
         ----------
         max_lost
             Maximum amount of time a candidate may remain lost.
-        """
 
+        """
         super().__init__()
 
         assert max_lost > 0, max_lost

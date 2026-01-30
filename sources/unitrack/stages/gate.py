@@ -13,23 +13,20 @@ from .base_stage import Stage
 
 
 class GateModule(nn.Module):
-    """
-    A module that performs gating of observations, returns a mask for candidates and
+    """A module that performs gating of observations, returns a mask for candidates and
     detections.
     """
 
     @abc.abstractmethod
     @TX.override
     def forward(
-        self, ctx: TensorDictBase, cs: TensorDictBase, ds: TensorDictBase  # noqa: U100
+        self, ctx: TensorDictBase, cs: TensorDictBase, ds: TensorDictBase
     ) -> tuple[torch.Tensor, torch.Tensor]:
         raise NotImplementedError()
 
 
 class Gate(Stage):
-    """
-    A stage that performs gating of observations.
-    """
+    """A stage that performs gating of observations."""
 
     def __init__(self, gate: nn.Module, then: T.Sequence[Stage]):
         # TODO: required fields?

@@ -1,6 +1,4 @@
-r"""
-Tests for ``unitrack.tracker``.
-"""
+r"""Tests for ``unitrack.tracker``."""
 
 from __future__ import annotations
 
@@ -17,11 +15,11 @@ from unitrack import (
     states,
 )
 
+KEY_CATEGORY = "object_category"
+KEY_POSITION = "position_2d"
+
 
 def test_tracker():
-    KEY_CATEGORY = "object_category"
-    KEY_POSITION = "position_2d"
-
     device = torch.device("cpu")
     dtype = torch.float32
 

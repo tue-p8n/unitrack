@@ -8,9 +8,7 @@ __all__ = ["Assignment"]
 
 
 class Assignment(torch.nn.Module):
-    """
-    Solves a linear assignment problem (LAP).
-    """
+    """Solves a linear assignment problem (LAP)."""
 
     threshold: float
 
@@ -23,8 +21,7 @@ class Assignment(torch.nn.Module):
     def forward(
         self, cost_matrix: torch.Tensor
     ) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
-        """
-        Solve the cost matrix
+        """Solve the cost matrix.
 
         Parameters
         ----------
@@ -35,8 +32,8 @@ class Assignment(torch.nn.Module):
         -------
             Tuple of matches (N_match x M_match), unmatched columns and
             unmatched rows
-        """
 
+        """
         if min(cost_matrix.shape) == 0:
             return self._no_match(cost_matrix)
 

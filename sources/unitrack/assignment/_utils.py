@@ -1,6 +1,4 @@
-r"""
-Various utilities for working with assignment problems.
-"""
+r"""Various utilities for working with assignment problems."""
 
 from __future__ import annotations
 
@@ -10,8 +8,7 @@ __all__ = ["gather_total_cost"]
 
 
 def gather_total_cost(cost_matrix: Tensor, assignment: Tensor) -> Tensor:
-    """
-    Gather the total cost of an assignment. The amounts to summing all the assigned
+    """Gather the total cost of an assignment. The amounts to summing all the assigned
     items from the cost matrix.
 
     Parameters
@@ -25,6 +22,6 @@ def gather_total_cost(cost_matrix: Tensor, assignment: Tensor) -> Tensor:
     -------
     Tensor[*]
         The total cost of the assignment.
-    """
 
+    """
     return cost_matrix[assignment[:, 0], assignment[:, 1]].sum()

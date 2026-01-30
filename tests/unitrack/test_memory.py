@@ -1,6 +1,5 @@
-r"""
-Tests for ``unitrack.memory``.
-"""
+r"""Tests for ``unitrack.memory``."""
+
 from __future__ import annotations
 
 import typing as T
@@ -39,20 +38,15 @@ def memory() -> ut.TrackletMemory:
 
 
 def test_memory_state(memory: ut.TrackletMemory) -> None:
-    r"""
-    Tests whether the ``state_dict`` of the memory is correctly initialized.
-    """
-
+    r"""Tests whether the ``state_dict`` of the memory is correctly initialized."""
     for state in STATES_USER + STATES_INTERNAL:
         assert state in memory.states, f"State {state} not found in memory states."
 
 
 def test_memory_read(memory: ut.TrackletMemory) -> None:
-    r"""
-    Tests whether the memory resets when the current frame is larger than the stored
+    r"""Tests whether the memory resets when the current frame is larger than the stored
     frame.
     """
-
     assert memory.frame == -1.0, "Memory frame should be 0 at initialization."
     assert memory.write_count == 0, "memory.write_count should be 0 at initialization."
 
@@ -103,7 +97,7 @@ def test_memory_read(memory: ut.TrackletMemory) -> None:
     # Test that reading at previous frames does not raise an error and resets the counter when `auto_reset` is `True`
     memory.auto_reset = True
 
-    ctx, obs = memory.read(6)
+    ctx, _obs = memory.read(6)
 
     assert memory.frame == -1, "auto reset was triggered"
     assert len(memory) == 0
@@ -112,13 +106,15 @@ def test_memory_read(memory: ut.TrackletMemory) -> None:
     assert torch.allclose(ctx[ut.consts.KEY_DELTA], 7 * unit_delta)
 
 
-def test_memory_write(memory: ut.TrackletMemory) -> None:
+def test_memory_write(memory: ut.TrackletMemory) -> None:  # noqa: PLR0915
     def _print_ctx_states(frame_num: int, ctx: TensorDict, states: TensorDict) -> None:
         ctx_pretty = {k: v.tolist() for k, v in ctx.to_dict().items()}
         states_pretty = {k: v.tolist() for k, v in states.to_dict().items()}
 
         print(
-            f"-- Frame {frame_num} -- \n- Context = {ctx_pretty}\n- States   = {states_pretty}"
+            f"=== Frame {frame_num} === \n"
+            + f"- Context = {ctx_pretty}\n"
+            + f"- States   = {states_pretty}"
         )
 
     cur_tracklets = 0

@@ -1,5 +1,4 @@
-r"""
-Implements an object tracker that uses the overlap between consecutive frames' object
+r"""Implements an object tracker that uses the overlap between consecutive frames' object
 bounding boxes to determine the association between them.
 """
 import typing
@@ -10,8 +9,7 @@ from torch import nn
 
 
 class MinScoreGate(nn.Module):
-    """
-    Selects and filters the input tensor based on the class label and a minimum
+    """Selects and filters the input tensor based on the class label and a minimum
     detection score.
     """
 

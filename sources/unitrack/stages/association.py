@@ -17,8 +17,7 @@ __all__ = ["Association"]
 
 
 class Association(Stage):
-    """
-    An association stage assigns new track IDs using a cost matrix computed via
+    """An association stage assigns new track IDs using a cost matrix computed via
     a :class:`.Cost` module.
     """
 
@@ -43,10 +42,7 @@ class Association(Stage):
         self, ctx: TensorDictBase, cs: TensorDictBase, ds: TensorDictBase
     ) -> tuple[TensorDictBase, TensorDictBase]:
         if check_debug_enabled():
-            print(
-                f"Associating {cs.batch_size[0]} candidates / "
-                f"{ds.batch_size[0]} detections"
-            )
+            pass
 
         if len(cs) == 0 or len(ds) == 0:
             return cs, ds

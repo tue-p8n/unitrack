@@ -1,6 +1,4 @@
-"""
-PyTorch implementation of the Hungarian algorithm for solving the assignment problem.
-"""
+"""PyTorch implementation of the Hungarian algorithm for solving the assignment problem."""
 
 from __future__ import annotations
 
@@ -17,14 +15,11 @@ __all__ = ["Hungarian", "hungarian_assignment"]
 
 
 class Hungarian(Assignment):
-    r"""
-    Implements the Hungarian algorithm for solving a linear assignment problem.
-    """
+    r"""Implements the Hungarian algorithm for solving a linear assignment problem."""
 
     @TX.override
     def _assign(self, cost_matrix: Tensor) -> tuple[Tensor, Tensor, Tensor]:
-        """
-        Solves the assignment problem using the Hungarian algorithm.
+        """Solves the assignment problem using the Hungarian algorithm.
 
         Parameters
         ----------
@@ -34,6 +29,7 @@ class Hungarian(Assignment):
         Returns
         -------
             Tuple of the optimal assignment and the total assignment cost.
+
         """
         return hungarian_assignment(cost_matrix)
 
@@ -41,10 +37,7 @@ class Hungarian(Assignment):
 def hungarian_assignment(
     cost_matrix: torch.Tensor,
 ) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
-    """
-    Perform linear assingment using the SciPy implementation
-    """
-
+    """Perform linear assingment using the SciPy implementation."""
     device = cost_matrix.device
 
     cm = cost_matrix.cpu().detach().contiguous()

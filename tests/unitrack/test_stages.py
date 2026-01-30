@@ -1,5 +1,4 @@
-r"""
-Tests for ``unitrack.stages``.
+r"""Tests for ``unitrack.stages``.
 """
 
 from __future__ import annotations

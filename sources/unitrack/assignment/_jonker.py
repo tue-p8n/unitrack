@@ -10,9 +10,7 @@ from ._base import Assignment
 __all__ = ["Jonker", "jonker_volgenant_assignment"]
 
 class Jonker(Assignment):
-    """
-    Uses the Jonker-Volgenant algorithm to solve the linear assignment problem.
-    """
+    """Uses the Jonker-Volgenant algorithm to solve the linear assignment problem."""
 
     @TX.override
     def _assign(
@@ -24,14 +22,12 @@ class Jonker(Assignment):
 def jonker_volgenant_assignment(
     cost_matrix: torch.Tensor, threshold: float
 ) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
-    """
-    Perform linear assignment. If possible, an assignment on the diagonal of the
+    """Perform linear assignment. If possible, an assignment on the diagonal of the
     matrix is preferred if this assignment has equal cost to the algorithm
     result.
 
     TODO: PyTorch implementation
     """
-
     from lap import lapjv
 
     device = cost_matrix.device
@@ -41,7 +37,7 @@ def jonker_volgenant_assignment(
     matches, unmatched_a, unmatched_b = [], [], []
 
     # Jonker algorithm, i.e. linear sum assignment (rows) -> (cols)
-    cost, x, y = lapjv(cost_matrix, extend_cost=True, cost_limit=threshold)
+    _cost, x, y = lapjv(cost_matrix, extend_cost=True, cost_limit=threshold)
 
     # Create match and unassigned lists
     for ix in range(x.shape[0]):

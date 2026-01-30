@@ -38,8 +38,7 @@ def _assert_result_count(ids: Tensor, expected: int):
 
 
 class SimpleTracker(nn.Module):
-    """
-    A wrapper around tracker and memory that uses only one memory for all tracking
+    """A wrapper around tracker and memory that uses only one memory for all tracking
     bookkeeping.
 
     Practically, this means that it only supports inference settings where each sequence
@@ -63,8 +62,7 @@ class SimpleTracker(nn.Module):
         *,
         device: torch.types.Device | None = "cpu",
     ) -> None:
-        """
-        Parameters
+        """Parameters
         ----------
         tracker: MultiStageTracker
             The tracker to be used.
@@ -73,6 +71,7 @@ class SimpleTracker(nn.Module):
         device: torch.types.Device
             The device to be used for the tracker and memory. By default, all buffers
             and parameters (if any) are moved to the CPU.
+
         """
         super().__init__()
 
@@ -100,8 +99,7 @@ class SimpleTracker(nn.Module):
 
     @override
     def forward(self, x: TensorDict, n: int, key: int, frame: int) -> TensorDict:
-        """
-        Parameters
+        """Parameters
         ----------
         x: TensorDictBase
             Represents the state of the current iteration.
@@ -118,8 +116,8 @@ class SimpleTracker(nn.Module):
         -------
         Tensor[n]
             Assigned instance IDs
-        """
 
+        """
         key, frame = _maybe_read_item(int, key, frame)
         _ = self._reset_on_new(key)
 
@@ -138,8 +136,7 @@ class SimpleTracker(nn.Module):
 
 
 class _MemoryReadWriter(nn.Module):
-    """
-    Wrapper around a tracklet memory that enables writing and reading in the forward pass.
+    """Wrapper around a tracklet memory that enables writing and reading in the forward pass.
     This is necessary because the memory is a stateful module that is not compatible with the functional API.
     """
 
@@ -162,8 +159,7 @@ class _MemoryReadWriter(nn.Module):
 
 
 class StatefulTracker(nn.Module):
-    """
-    A wrapper around tracker and tracklets that enables
+    """A wrapper around tracker and tracklets that enables
     stateful tracking of objects for every separate sequence.
     """
 
@@ -184,12 +180,10 @@ class StatefulTracker(nn.Module):
     def _split_persistent_buffers(
         cls, module: nn.Module, prefix: str
     ) -> tuple[dict[str, torch.Tensor], dict[str, torch.Tensor]]:
-        """
-        Split the buffers of a module into two dictionaries: one for
+        """Split the buffers of a module into two dictionaries: one for
         buffers that are shared across sequences (persistent) and one for buffers that are
         unique to every sequence (non-persistent).
         """
-
         shared = {}
         unique = {}
 
@@ -232,8 +226,7 @@ class StatefulTracker(nn.Module):
 
     @override
     def forward(self, x: TensorDict, n: int, key: int, frame: int) -> Tensor:
-        """
-        Parameters
+        """Parameters
         ----------
         x: TensorDictBase
             Represents the state of the current iteration.
@@ -250,6 +243,7 @@ class StatefulTracker(nn.Module):
         -------
         Tensor[n]
             Assigned instance IDs
+
         """
         key, frame = _maybe_read_item(int, key, frame)
         params, buffers_shared, buffers_unique = self._lookup_pbd(key)

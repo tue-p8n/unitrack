@@ -1,6 +1,4 @@
-"""
-A state is an entry of ``Tracklets`` that tracks the state of a field.
-"""
+"""A state is an entry of ``Tracklets`` that tracks the state of a field."""
 
 from __future__ import annotations
 

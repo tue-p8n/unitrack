@@ -1,5 +1,4 @@
-r"""
-Tests for ``unitrack.assignment``.
+r"""Tests for ``unitrack.assignment``.
 """
 
 
@@ -66,10 +65,8 @@ def test_assignment_invoke(cost_matrix, solver):
 
 
 def generate_cost(size: float) -> tuple[torch.Tensor, torch.Tensor]:
+    """Generate a random cost matrix and a random matching
     """
-    Generate a random cost matrix and a random matching
-    """
-
     size = round(size)
     cost_matrix = torch.randn(size, size, dtype=torch.float) * torch.randint(
         -10, 10, (size, size)
@@ -82,7 +79,7 @@ def generate_cost(size: float) -> tuple[torch.Tensor, torch.Tensor]:
 
 
 @pytest.mark.parametrize(
-    ["cost_matrix", "solution"],
+    ("cost_matrix", "solution"),
     [
         (
             torch.arange(9, dtype=torch.float).reshape(3, 3),
@@ -103,10 +100,8 @@ def generate_cost(size: float) -> tuple[torch.Tensor, torch.Tensor]:
     ],
 )
 def test_assignment_known(cost_matrix, solution, solver):
+    """Test if all algorithms can solve the known N x M cost matrix to known N x 2 matches
     """
-    Test if all algorithms can solve the known N x M cost matrix to known N x 2 matches
-    """
-
     print(f"-- {solver.__class__.__name__} --")
 
     cost_matrix = torch.as_tensor(cost_matrix)
@@ -122,7 +117,7 @@ def test_assignment_known(cost_matrix, solution, solver):
     trials = 6
     for i in range(warmup + trials):
         solve_time = time.process_time()
-        matches, unmatch_col, unmatch_row = solver(cost_matrix)
+        matches, _unmatch_col, _unmatch_row = solver(cost_matrix)
         solve_time = time.process_time() - solve_time
         solve_time *= 1e3  # ms
 

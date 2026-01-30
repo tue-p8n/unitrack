@@ -1,5 +1,4 @@
-r"""
-This module defines the `TrackletMemory` class, which is a container module for tracking predictions/paths, commonly referred to as "tracklets" in the literature.
+r"""This module defines the `TrackletMemory` class, which is a container module for tracking predictions/paths, commonly referred to as "tracklets" in the literature.
 
 A tracklet represents a generic collection of states, such as objects in a scene. The states of the tracklets are implemented in subclasses of the `Field` class, which can be used to compute a distance matrix between tracklets at different frames.
 """
@@ -28,8 +27,7 @@ class TrackletMemoryWriteReturnType(StrEnum):
 
 
 class TrackletMemory(nn.Module):
-    """
-    A memory module that tracks the states of tracklets over time and provides
+    """A memory module that tracks the states of tracklets over time and provides
     a list of IDs to assign the the new detections at the current frame when
     the memory is written to.
 
@@ -123,8 +121,7 @@ class TrackletMemory(nn.Module):
         )
 
     def __len__(self) -> int:
-        """
-        Return the number of times that a new observation has been comitted to the
+        """Return the number of times that a new observation has been comitted to the
         memory.
 
         Note that this does not necessarily correspond to the number of frames that
@@ -140,8 +137,7 @@ class TrackletMemory(nn.Module):
         obs: TensorDictBase,
         new: TensorDictBase,
     ) -> Tensor:
-        """
-        Apply the updated observations and new detections to the tracklets states.
+        """Apply the updated observations and new detections to the tracklets states.
 
         Both the updated observations and new detections have a key `KEY_INDEX` that
         corresponds to a `torch.long` tensor of indices. This value is used to
@@ -176,6 +172,7 @@ class TrackletMemory(nn.Module):
             The complete set of IDs of the context (which is also updated in-place).
             The length $N$ is equal to the amount of positive indices at the
             key `KEY_INDEX` in the `obs` and `new` arguments.
+
         """
         return T.cast(
             Tensor,
@@ -189,9 +186,7 @@ class TrackletMemory(nn.Module):
         obs: TensorDictBase,
         new: TensorDictBase,
     ) -> TensorDictBase:
-        """
-        Variant of :meth:`write` that also returns the observed state of the tracklets.
-        """
+        """Variant of :meth:`write` that also returns the observed state of the tracklets."""
         return T.cast(
             TensorDictBase,
             self._write(ctx, obs, new, return_type=TrackletMemoryWriteReturnType.STATE),
@@ -238,13 +233,7 @@ class TrackletMemory(nn.Module):
             raise ValueError(msg)
 
         if check_debug_enabled():
-            print(
-                f"Memory write at frame {frame} with {idx_obs_amt} observations and {idx_new_amt} new detections."
-            )
-            print(
-                f"Current IDs: {obs_ids[obs_mask].tolist()} -> detections {idx_obs_valid.tolist()}"
-            )
-            print(f"Extend IDs: {new_ids.tolist()} -> detections {idx_new.tolist()}")
+            pass
 
         idx_all = torch.cat((idx_obs_valid, idx_new), dim=0)
         idx_all_amt = idx_all.numel()
@@ -304,6 +293,7 @@ class TrackletMemory(nn.Module):
         -------
         Tuple[Tensor, Tensor]
             A tuple of (track indices, track IDs) of the updated tracklets.
+
         """
         num = obs.batch_size[0]
         if num <= 0:
@@ -338,6 +328,7 @@ class TrackletMemory(nn.Module):
         -------
         Tuple[Tensor, Tensor]
             A tuple of (track indices, track IDs) of the newly created tracklets.
+
         """
         num = new.batch_size[0]
         if num <= 0:
@@ -401,8 +392,7 @@ class TrackletMemory(nn.Module):
 
     @torch.no_grad()
     def read(self, frame: int) -> tuple[TensorDictBase, TensorDictBase]:
-        """
-        Observe the current state of tracklets. Evolves the states of the tracklets
+        """Observe the current state of tracklets. Evolves the states of the tracklets
         to the current frame.
 
         Parameters
@@ -414,6 +404,7 @@ class TrackletMemory(nn.Module):
         Returns
         -------
             A ``TensorDict`` object will all observed states.
+
         """
         if frame < 0:
             msg = f"Cannot read from memory at negative frame index! Got: {frame!r}"
@@ -423,14 +414,14 @@ class TrackletMemory(nn.Module):
             if self.auto_reset:
                 # Reset because the current frame is larger than the stored frame.
                 if check_debug_enabled():
-                    print(f"Auto-resetting memory ({self.frame=} >= {frame=})!")
+                    pass
                 self.reset()
             else:
                 msg = f"Frame index {frame} is less than or equal to saved frame {self.frame=}!"
                 raise IndexError(msg)
 
         if check_debug_enabled():
-            print(f"Reading memory at frame {frame}.")
+            pass
 
         # Calculate the time-delta from the amoutn of frames passed and the FPS.
         delta = torch.abs(frame - self.frame) / self.fps
@@ -475,12 +466,9 @@ class TrackletMemory(nn.Module):
 
     @torch.no_grad()
     def reset(self) -> None:
-        """
-        Reset the states of this ``Tracklets`` module.
-        """
-
+        """Reset the states of this ``Tracklets`` module."""
         if check_debug_enabled():
-            print("Resetting memory")
+            pass
         self.frame.fill_(-1)
         self.write_count.fill_(0)
         self.tracklet_count.fill_(0)
@@ -493,8 +481,7 @@ class TrackletMemory(nn.Module):
     def forward(
         self, ctx: TensorDictBase, obs: TensorDictBase, new: TensorDictBase
     ) -> Tensor:
-        """
-        Forward pass of the memory module that wraps the :meth:`write` method.
+        """Forward pass of the memory module that wraps the :meth:`write` method.
 
         Users are encouraged to use the :meth:`write` method directly, as it is more
         explicit.

@@ -1,28 +1,26 @@
-"""
-Implements memory that stores a Tensor value.
-"""
+"""Implements memory that stores a Tensor value."""
 
 import typing as T
 
 import torch
-from unipercept.types import DType, Size, Tensor
+from torch import Tensor, Size
 
 from .base_state import DEFAULT_STATE_SLOTS, State
 
-DTypeSpec: T.TypeAlias = DType | str
+type DTypeSpec = torch.dtype | str
 
 
 def _cast_dtype(dtype: DTypeSpec) -> torch.dtype:
     if isinstance(dtype, str):
         dtype = getattr(torch, dtype)
     if not isinstance(dtype, torch.dtype):
-        raise ValueError(f"No a valid data type: {dtype}!")
+        msg = f"No a valid data type: {dtype}!"
+        raise ValueError(msg)
     return dtype
 
 
 class Value(State):
-    """
-    A :class:`.State` that holds memory as-is without any updating logic
+    """A :class:`.State` that holds memory as-is without any updating logic
     implemented.
     """
 
@@ -68,7 +66,9 @@ class Value(State):
 
     @T.override
     def __repr__(self) -> str:
-        return f"{self.__class__.__name__}({self.memory.dtype}, shape={self.memory.shape})"
+        return (
+            f"{self.__class__.__name__}({self.memory.dtype}, shape={self.memory.shape})"
+        )
 
     @T.override
     def read(self, index: Tensor) -> dict[str, Tensor]:

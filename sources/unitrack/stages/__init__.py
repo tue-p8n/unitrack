@@ -1,6 +1,4 @@
-"""
-A stage defines a step in a tracking process.
-"""
+"""A stage defines a step in a tracking process."""
 
 from __future__ import annotations
 
