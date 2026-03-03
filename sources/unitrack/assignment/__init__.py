@@ -24,4 +24,3 @@ __all__ = [
     "hungarian_assignment",
     "jonker_volgenant_assignment",
 ]
-

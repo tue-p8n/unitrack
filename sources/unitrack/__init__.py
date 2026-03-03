@@ -5,7 +5,7 @@ UniTrack.
 
 This module implements a tracker algorithm that maps detections to tracklets.
 
-.. math:: 
+.. math::
 
     Tracker: Detections \rightarrow Tracklets
 
