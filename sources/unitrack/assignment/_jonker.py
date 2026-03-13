@@ -1,12 +1,30 @@
-from __future__ import annotations
+"""Implementation of the Jonker-Volgenant algorithm for linear assignment problems."""
+
+import typing
 
 import numpy as np
 import torch
 import torch.fx
-import typing_extensions as TX  # noqa: N812
-from lap import lapjv  # type: ignore[import-untyped]
 
 from ._base import Assignment
+
+try:
+    from lap import lapjv
+
+    lapjv_error = ""
+except ImportError:
+    lapjv_error = (
+        "Algorithm `lapjv` is not available. "
+        "Please install the 'lap' package to use the Jonker-Volgenant algorithm."
+    )
+
+    def lapjv(
+        cost_matrix: np.ndarray,  # noqa: ARG001
+        extend_cost: bool = False,  # noqa: ARG001
+        cost_limit: float = np.inf,  # noqa: ARG001
+    ) -> tuple[float, np.ndarray, np.ndarray]:
+        raise ImportError(lapjv_error)
+
 
 __all__ = ["Jonker", "jonker_volgenant_assignment"]
 
@@ -14,7 +32,12 @@ __all__ = ["Jonker", "jonker_volgenant_assignment"]
 class Jonker(Assignment):
     """Uses the Jonker-Volgenant algorithm to solve the linear assignment problem."""
 
-    @TX.override
+    def __new__(cls, *_, **__) -> typing.Self:
+        if lapjv_error:
+            raise ImportError(lapjv_error)
+        return super().__new__(cls)
+
+    @typing.override
     def _assign(
         self, cost_matrix: torch.Tensor
     ) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
@@ -29,8 +52,6 @@ def jonker_volgenant_assignment(
 
     If possible, an assignment on the diagonal of the matrix is preferred if this
     assignment has equal cost to the algorithm result.
-
-    TODO: PyTorch implementation
     """
     device = cost_matrix.device
     cost_matrix = cost_matrix.detach().cpu().contiguous()

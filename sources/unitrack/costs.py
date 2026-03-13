@@ -6,18 +6,30 @@ Used to compute the assignment costs between tracklets and detections.
 
 from __future__ import annotations
 
-import enum as E  # noqa: N812
+import abc
+import enum
 import itertools
-import typing as T  # noqa: N812
-from abc import abstractmethod
+import typing
 
 import torch
-import typing_extensions as TX  # noqa: N812
 from tensordict import TensorDictBase
 from torch import nn
 from torchvision.ops import box_iou
 
-__all__ = []
+__all__ = [
+    "BoxIoU",
+    "CDist",
+    "Cosine",
+    "Cost",
+    "FieldCost",
+    "GateCost",
+    "MaskIoU",
+    "RadialBasis",
+    "Reduce",
+    "Reduction",
+    "Softmax",
+    "Weighted",
+]
 
 # ---------------- #
 # Abstract classes #
@@ -33,13 +45,13 @@ class Cost(torch.nn.Module):
 
     required_fields: torch.jit.Final[list[str]]
 
-    def __init__(self, required_fields: T.Iterable[str]):
+    def __init__(self, required_fields: typing.Iterable[str]):
         super().__init__()
 
         self.required_fields = list(set(required_fields))
 
-    @abstractmethod
-    @TX.override
+    @abc.abstractmethod
+    @typing.override
     def forward(self, cs: TensorDictBase, ds: TensorDictBase) -> torch.Tensor:
         """
         Compute the assignment costs.
@@ -64,10 +76,12 @@ class Cost(torch.nn.Module):
 
 
 class FieldCost(Cost):
-    field: T.Final[str]
-    select: T.Final[list[int]]
+    """Cost module that operates on a single field."""
 
-    def __init__(self, field: str, select: T.Iterable[int] | None = None):
+    field: typing.Final[str]
+    select: typing.Final[list[int]]
+
+    def __init__(self, field: str, select: typing.Iterable[int] | None = None):
         super().__init__(required_fields=[field])
 
         self.field = field
@@ -77,6 +91,7 @@ class FieldCost(Cost):
     def get_field(
         self, cs: TensorDictBase, ds: TensorDictBase
     ) -> tuple[torch.Tensor, torch.Tensor]:
+        """Load the field from the candidate observations and detections."""
         ts_field = cs.get(self.field)
         ds_field = ds.get(self.field)
 
@@ -89,12 +104,12 @@ class FieldCost(Cost):
 
         return ts_field, ds_field
 
-    @TX.override
+    @typing.override
     def forward(self, cs: TensorDictBase, ds: TensorDictBase):
         ts_field, ds_field = self.get_field(cs, ds)
         return self.compute(ts_field, ds_field)
 
-    @abstractmethod
+    @abc.abstractmethod
     def compute(self, cs: torch.Tensor, ds: torch.Tensor) -> torch.Tensor:
         """
         Compute the assignment costs.
@@ -131,9 +146,9 @@ class GateCost(FieldCost):
     If they have different field values, they are set to `False`.
     """
 
-    @TX.override
-    def compute(self, cs_cats: torch.Tensor, ds_cats: torch.Tensor) -> torch.Tensor:
-        gate_matrix = ds_cats[None, :] - cs_cats[:, None]
+    @typing.override
+    def compute(self, cs: torch.Tensor, ds: torch.Tensor) -> torch.Tensor:
+        gate_matrix = ds[None, :] - cs[:, None]
 
         return torch.where(gate_matrix == 0, 0.0, torch.inf)
 
@@ -157,7 +172,7 @@ class GateCost(FieldCost):
         return Reduce([cost, self], Reduction.SUM)
 
 
-DEFAULT_EPS: T.Final = 1e-5
+DEFAULT_EPS: typing.Final = 1e-5
 
 # ------------- #
 # Overlap costs #
@@ -173,13 +188,15 @@ class MaskIoU(FieldCost):
         super().__init__(*args, **kwargs)
         self.eps = eps
 
-    @TX.override
+    @typing.override
     def compute(self, cs: torch.Tensor, ds: torch.Tensor) -> torch.Tensor:
         return _naive_mask_iou(cs, ds, self.eps)
 
 
 class BoxIoU(MaskIoU):
-    @TX.override
+    """Computes IoU cost matrix between two sets of bounding boxes."""
+
+    @typing.override
     def compute(self, cs: torch.Tensor, ds: torch.Tensor) -> torch.Tensor:
         cs_field = _pad_degenerate_boxes(cs)
         ds_field = _pad_degenerate_boxes(ds)
@@ -283,35 +300,36 @@ class Weighted(Cost):
         self.cost = cost
         self.register_buffer(
             "weight",
-            torch.as_tensor(weight, dtype=torch.float32, requires_grad=False),
+            torch.tensor(weight, dtype=torch.float32, requires_grad=False),
             persistent=True,
         )
 
+    @typing.override
     def forward(self, cs: TensorDictBase, ds: TensorDictBase) -> torch.Tensor:
         return self.weight * self.cost(cs, ds).type_as(self.weight)
 
 
-class Reduction(E.StrEnum):
+class Reduction(enum.StrEnum):
     """Reduction method for :class:`.Reduce` cost module."""
 
-    SUM = E.auto()
-    MEAN = E.auto()
-    MIN = E.auto()
-    MAX = E.auto()
-    PRODUCT = E.auto()
+    SUM = enum.auto()
+    MEAN = enum.auto()
+    MIN = enum.auto()
+    MAX = enum.auto()
+    PRODUCT = enum.auto()
 
 
 class Reduce(Cost):
     """A cost reduction module."""
 
-    weights: T.Final[list[float]]
-    method: T.Final[Reduction]
+    weights: typing.Final[list[float]]
+    method: typing.Final[Reduction]
 
     def __init__(
         self,
-        costs: T.Sequence[Cost],
+        costs: typing.Sequence[Cost],
         method: Reduction | str,
-        weights: T.Sequence[float] | None = None,
+        weights: typing.Sequence[float] | None = None,
     ):
         super().__init__(
             required_fields=itertools.chain(*(c.required_fields for c in costs))
@@ -322,7 +340,7 @@ class Reduce(Cost):
             weights = [1.0] * len(costs)
         self.weights = list(weights)
 
-    @TX.override
+    @typing.override
     def forward(self, cs: TensorDictBase, ds: TensorDictBase) -> torch.Tensor:
         res = torch.stack(
             [fn(cs, ds) * wt for fn, wt in zip(self.costs, self.weights, strict=True)]
@@ -353,13 +371,13 @@ class Reduce(Cost):
 class CDist(FieldCost):
     """Computes a distance between two fields using ``torch.cdist``."""
 
-    p: T.Final[float]
+    p: typing.Final[float]
 
     def __init__(self, *args, p_norm: float = 2.0, **kwargs):
         super().__init__(*args, **kwargs)
         self.p = p_norm
 
-    @TX.override
+    @typing.override
     def compute(self, cs: torch.Tensor, ds: torch.Tensor) -> torch.Tensor:
         return torch.cdist(cs, ds, self.p, "donot_use_mm_for_euclid_dist")
 
@@ -375,7 +393,7 @@ class Cosine(FieldCost):
         super().__init__(*args, **kwargs)
         self.eps = eps
 
-    @TX.override
+    @typing.override
     def forward(self, cs: TensorDictBase, ds: TensorDictBase):
         ts_field, ds_field = self.get_field(cs, ds)
         return cosine_distance(ts_field, ds_field, self.eps)
@@ -398,7 +416,7 @@ class Softmax(FieldCost):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-    @TX.override
+    @typing.override
     def forward(self, cs: TensorDictBase, ds: TensorDictBase):
         ts_field, ds_field = self.get_field(cs, ds)
         return softmax_distance(ts_field, ds_field)
@@ -414,9 +432,9 @@ def softmax_distance(a: torch.Tensor, b: torch.Tensor) -> torch.Tensor:
 class RadialBasis(FieldCost):
     r"""Computes the radial basis function (RBF) between two fields."""
 
-    @TX.override
-    def compute(self, x: torch.Tensor, y: torch.Tensor) -> torch.Tensor:
-        return radial_basis_distance(x, y)
+    @typing.override
+    def compute(self, cs: torch.Tensor, ds: torch.Tensor) -> torch.Tensor:
+        return radial_basis_distance(cs, ds)
 
 
 def radial_basis_distance(a: torch.Tensor, b: torch.Tensor) -> torch.Tensor:

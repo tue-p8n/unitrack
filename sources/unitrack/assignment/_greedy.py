@@ -27,29 +27,14 @@ class Greedy(Assignment):
 
 
 @torch.no_grad()
-def greedy_assignment(
+def greedy_assignment_legacy(
     cost_matrix: torch.Tensor,
 ) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
     """
-    Perform a greedy assignment algorithm on a cost matrix.
+    Legacy implementation of the greedy assignment algorithm.
 
-    Assigns pairs of elements (rows and columns) based on the minimum cost,
-    with a threshold as the stopping condition.
-
-    Parameters
-    ----------
-    cost_matrix : torch.Tensor
-        A 2D tensor representing the cost matrix.
-
-    Returns
-    -------
-    matches : torch.Tensor
-        A tensor containing the indices of matched row-column pairs.
-    unmatched_rows : torch.Tensor
-        A tensor containing the indices of unmatched rows.
-    unmatched_cols : torch.Tensor
-        A tensor containing the indices of unmatched columns.
-
+    See :meth:`greedy_assignment` for the new implementation.
+    This legacy version is provided for reference and testing purposes.
     """
     with cost_matrix.device:
         rows, cols = cost_matrix.shape
@@ -77,4 +62,78 @@ def greedy_assignment(
     return matches[:match_count], unmatched_rows, unmatched_cols
 
 
+@torch.no_grad()
+def greedy_assignment(
+    cost_matrix: torch.Tensor,
+) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+    """
+    Perform a greedy assignment algorithm on a cost matrix.
+
+    Assigns pairs of elements (rows and columns) based on the minimum cost,
+    with a threshold as the stopping condition.
+
+    Parameters
+    ----------
+    cost_matrix : torch.Tensor
+        A 2D tensor representing the cost matrix.
+
+    Returns
+    -------
+    matches : torch.Tensor
+        A tensor containing the indices of matched row-column pairs.
+    unmatched_rows : torch.Tensor
+        A tensor containing the indices of unmatched rows.
+    unmatched_cols : torch.Tensor
+        A tensor containing the indices of unmatched columns.
+
+    """
+    rows, cols = cost_matrix.shape
+    device = cost_matrix.device
+
+    # Edge case: Empty matrix
+    if rows == 0 or cols == 0:
+        return (
+            torch.empty((0, 2), dtype=torch.long, device=device),
+            torch.arange(rows, dtype=torch.long, device=device),
+            torch.arange(cols, dtype=torch.long, device=device),
+        )
+
+    # Flatten and sort once (O(N log N) is much faster than iterative O(N^2) mins)
+    flat_costs = cost_matrix.flatten()
+    sorted_indices = torch.argsort(flat_costs)
+
+    matches = []
+    row_used = torch.zeros(rows, dtype=torch.bool, device=device)
+    col_used = torch.zeros(cols, dtype=torch.bool, device=device)
+
+    # Iterate through sorted costs
+    for idx in sorted_indices:
+        # Stop early if the lowest remaining cost is infinite (gated)
+        if not torch.isfinite(flat_costs[idx]):
+            break
+
+        r, c = divmod(idx.item(), cols)
+
+        if not row_used[r] and not col_used[c]:
+            matches.append([r, c])
+            row_used[r] = True
+            col_used[c] = True
+
+            # Stop early if we've matched the maximum possible pairs
+            if len(matches) == min(rows, cols):
+                break
+
+    # Compile results
+    if matches:
+        matches_t = torch.tensor(matches, dtype=torch.long, device=device)
+    else:
+        matches_t = torch.empty((0, 2), dtype=torch.long, device=device)
+
+    unmatched_rows = torch.nonzero(~row_used).squeeze(1)
+    unmatched_cols = torch.nonzero(~col_used).squeeze(1)
+
+    return matches_t, unmatched_rows, unmatched_cols
+
+
 torch.fx.wrap("greedy_assignment")
+torch.fx.wrap("greedy_assignment_legacy")

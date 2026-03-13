@@ -25,14 +25,7 @@ Terminology
     current or a previous frame.
 """
 
-__version__ = "1.0.1"
-
-from . import assignment as assignment
-from . import consts as consts
-from . import costs as costs
-from . import debug as debug
-from . import stages as stages
-from . import states as states
+from . import assignment, consts, costs, stages, states
 from ._memory import TrackletMemory, TrackletMemoryWriteReturnType
 from ._tracker import MultiStageTracker, SelectField
 from ._wrappers import SimpleTracker, StatefulTracker
@@ -51,3 +44,21 @@ __all__ = [
     "stages",
     "states",
 ]
+
+__version__: str
+
+
+def __getattr__(name: str):
+    # Use `importlib.metadata` to get the version of the package.
+    if name == "__version__":
+        import importlib.metadata
+
+        return importlib.metadata.version("unitrack")
+
+    # Otherwise, raise an AttributeError
+    msg = f"module {__name__!r} has no attribute {name!r}"
+    raise AttributeError(msg)
+
+
+def __dir__():
+    return __all__
