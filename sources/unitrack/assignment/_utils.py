@@ -1,4 +1,4 @@
-r"""Various utilities for working with assignment problems."""
+r"""Helpers for downstream consumers of an assignment result."""
 
 from __future__ import annotations
 
@@ -9,21 +9,20 @@ __all__ = ["gather_total_cost"]
 
 def gather_total_cost(cost_matrix: Tensor, assignment: Tensor) -> Tensor:
     """
-    Gather the total cost of an assignment.
-
-    The amounts to summing all the assigned items from the cost matrix.
+    Sum the cost-matrix entries selected by a row-column assignment.
 
     Parameters
     ----------
-    cost_matrix: Tensor[N, M]
-        The cost matrix.
-    assignment: Tensor[min(N, M), 2]
-        The assignment tensor of row-column pairs.
+    cost_matrix : torch.Tensor
+        ``(N, M)`` cost matrix.
+    assignment : torch.Tensor
+        ``(K, 2)`` long tensor of ``(row, col)`` index pairs.
 
     Returns
     -------
-    Tensor[*]
-        The total cost of the assignment.
+    torch.Tensor
+        Scalar tensor holding the sum of ``cost_matrix[r, c]`` over the
+        assigned pairs.
 
     """
     return cost_matrix[assignment[:, 0], assignment[:, 1]].sum()

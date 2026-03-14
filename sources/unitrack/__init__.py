@@ -1,61 +1,108 @@
-r"""
-UniTrack.
+"""Unitrack — image-trained video tracking primitives."""
 
-========
+from __future__ import annotations
 
-This module implements a tracker algorithm that maps detections to tracklets.
-
-.. math::
-
-    Tracker: Detections \rightarrow Tracklets
-
-Each detection has fields that can be used to assign IDs from Tracklets in the
-previous frame to Tracklets in the current frame.
-
-Terminology
------------
-
-- **Detections**: All detected structures at the current frame.
-
-- **Tracklets**: All detections from previous frames, each having a unique track ID.
-
-- **Assignment**: The process that assigns each Detection to a Tracklet.
-
-- **Lost**: The state of a Tracklet that has not been assigned to a detection at the
-    current or a previous frame.
-"""
-
-from . import assignment, consts, costs, stages, states
-from ._memory import TrackletMemory, TrackletMemoryWriteReturnType
-from ._tracker import MultiStageTracker, SelectField
-from ._wrappers import SimpleTracker, StatefulTracker
+from . import assignment, costs, data, gates, lifecycle, pipeline, states
+from .data import (
+    ClipDetections,
+    ClipFrameContext,
+    ClipMatchOutcome,
+    ClipTracklets,
+    CostExpression,
+    Detections,
+    FrameContext,
+    Gate,
+    MatchOutcome,
+    TensorSpec,
+    Tracklets,
+)
+from .lifecycle import (
+    ConfirmedOnly,
+    IncludeAll,
+    IncludeTentative,
+    NoLifecycle,
+    StandardLifecycle,
+    TrackletStatus,
+)
+from .pipeline import (
+    Associator,
+    CostProducer,
+    Filter,
+    Gated,
+    GateProducer,
+    Iterate,
+    Parallel,
+    Pipe,
+    PipelineTypeError,
+    Sequential,
+    Stage,
+)
+from .tracker import (
+    AutoForkOnNewKey,
+    BatchTracker,
+    ClipTracker,
+    ForkPolicy,
+    MultiStream,
+    OrderedNoInterleaving,
+    StepResult,
+    Tracker,
+    TrackletMemory,
+)
 
 __all__ = [
-    "MultiStageTracker",
-    "SelectField",
-    "SimpleTracker",
-    "StatefulTracker",
+    "Associator",
+    "AutoForkOnNewKey",
+    "BatchTracker",
+    "ClipDetections",
+    "ClipFrameContext",
+    "ClipMatchOutcome",
+    "ClipTracker",
+    "ClipTracklets",
+    "ConfirmedOnly",
+    "CostExpression",
+    "CostProducer",
+    "Detections",
+    "Filter",
+    "ForkPolicy",
+    "FrameContext",
+    "Gate",
+    "GateProducer",
+    "Gated",
+    "IncludeAll",
+    "IncludeTentative",
+    "Iterate",
+    "MatchOutcome",
+    "MultiStream",
+    "NoLifecycle",
+    "OrderedNoInterleaving",
+    "Parallel",
+    "Pipe",
+    "PipelineTypeError",
+    "Sequential",
+    "Stage",
+    "StandardLifecycle",
+    "StepResult",
+    "TensorSpec",
+    "Tracker",
     "TrackletMemory",
-    "TrackletMemoryWriteReturnType",
+    "TrackletStatus",
+    "Tracklets",
     "assignment",
-    "consts",
     "costs",
-    "debug",
-    "stages",
+    "data",
+    "gates",
+    "lifecycle",
+    "pipeline",
     "states",
 ]
-
 __version__: str
 
 
 def __getattr__(name: str):
-    # Use `importlib.metadata` to get the version of the package.
     if name == "__version__":
         import importlib.metadata
 
         return importlib.metadata.version("unitrack")
-
-    # Otherwise, raise an AttributeError
     msg = f"module {__name__!r} has no attribute {name!r}"
     raise AttributeError(msg)
 

@@ -1,0 +1,110 @@
+{
+  "metadata": {
+    "dataset": "cityscapes-dvps",
+    "device": "cpu",
+    "models": {
+      "mask2former-tiny": "facebook/mask2former-swin-tiny-cityscapes-panoptic"
+    },
+    "limit_seqs": 5,
+    "max_frames": null,
+    "mask_iou_threshold": 0.5,
+    "min_score": 0.1,
+    "offset": 1000,
+    "thing_ids": [
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18
+    ],
+    "unitrack_version": "2.0.0",
+    "transformers_version": "5.9.0",
+    "trackers": [
+      "maskiou",
+      "cosine",
+      "cascade",
+      "kalman",
+      "learned"
+    ]
+  },
+  "results": [
+    {
+      "model_key": "mask2former-tiny",
+      "tracker_key": "maskiou",
+      "metrics": {
+        "HOTA": 0.3385530599552757,
+        "DetA": 0.3027096525410591,
+        "AssA": 0.4321582269455336,
+        "LocA": 0.7752932068001709,
+        "MOTA": -0.12103174603174603,
+        "IDF1": 0.25555555555555554
+      },
+      "num_sequences": 5,
+      "num_frames": 30,
+      "seconds": 676.5452910940003
+    },
+    {
+      "model_key": "mask2former-tiny",
+      "tracker_key": "cosine",
+      "metrics": {
+        "HOTA": 0.3740525685295683,
+        "DetA": 0.2999312883639843,
+        "AssA": 0.49921327962136763,
+        "LocA": 0.7755391222272057,
+        "MOTA": 0.02976190476190476,
+        "IDF1": 0.3622222222222222
+      },
+      "num_sequences": 5,
+      "num_frames": 30,
+      "seconds": 425.4216698330001
+    },
+    {
+      "model_key": "mask2former-tiny",
+      "tracker_key": "cascade",
+      "metrics": {
+        "HOTA": 0.414906269413877,
+        "DetA": 0.3005035028996794,
+        "AssA": 0.6120947537520691,
+        "LocA": 0.7755762258725948,
+        "MOTA": 0.05952380952380952,
+        "IDF1": 0.41333333333333333
+      },
+      "num_sequences": 5,
+      "num_frames": 30,
+      "seconds": 110.55020711899851
+    },
+    {
+      "model_key": "mask2former-tiny",
+      "tracker_key": "kalman",
+      "metrics": {
+        "HOTA": 0.2832152762399897,
+        "DetA": 0.30332942203520996,
+        "AssA": 0.29405470840528275,
+        "LocA": 0.7752029552757529,
+        "MOTA": -0.19642857142857142,
+        "IDF1": 0.17555555555555555
+      },
+      "num_sequences": 5,
+      "num_frames": 30,
+      "seconds": 95.78688822799995
+    },
+    {
+      "model_key": "mask2former-tiny",
+      "tracker_key": "learned",
+      "metrics": {
+        "HOTA": 0.4122972846909229,
+        "DetA": 0.30114588190001584,
+        "AssA": 0.6086281569259354,
+        "LocA": 0.7752905749250798,
+        "MOTA": 0.03968253968253968,
+        "IDF1": 0.39555555555555555
+      },
+      "num_sequences": 5,
+      "num_frames": 30,
+      "seconds": 89.57143916100176
+    }
+  ]
+}

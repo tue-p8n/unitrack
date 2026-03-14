@@ -1,0 +1,1052 @@
+{
+  "meta": {
+    "timestamp": "2026-06-10T14:29:17.798497+00:00",
+    "cuda_available": false,
+    "torch_version": "2.12.0+cu130",
+    "gpu": null,
+    "warmup": 3,
+    "trials": 10
+  },
+  "results": {
+    "iou_8x8_B1": {
+      "unitrack_lapjvx_loop": {
+        "batch_size": 1,
+        "lat_mean_ms": 0.17700448632240295,
+        "lat_std_ms": 0.011660406365990639,
+        "lat_median_ms": 0.1723569929599762,
+        "lat_per_problem_us": 172.3569929599762,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      },
+      "unitrack_lapjvs_loop": {
+        "batch_size": 1,
+        "lat_mean_ms": 0.1621771901845932,
+        "lat_std_ms": 0.004105366766452789,
+        "lat_median_ms": 0.16077500581741333,
+        "lat_per_problem_us": 160.77500581741333,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      },
+      "unitrack_lapjvx_batch": {
+        "batch_size": 1,
+        "lat_mean_ms": 0.20782069861888885,
+        "lat_std_ms": 0.022099802270531654,
+        "lat_median_ms": 0.20372599363327026,
+        "lat_per_problem_us": 203.72599363327026,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      },
+      "unitrack_lapjvs_batch": {
+        "batch_size": 1,
+        "lat_mean_ms": 0.16190971434116364,
+        "lat_std_ms": 0.004437768831849098,
+        "lat_median_ms": 0.15987300872802734,
+        "lat_per_problem_us": 159.87300872802734,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      },
+      "hungarian_loop_cpu": {
+        "batch_size": 1,
+        "lat_mean_ms": 0.07132820785045624,
+        "lat_std_ms": 0.006376620382070541,
+        "lat_median_ms": 0.06730799376964569,
+        "lat_per_problem_us": 67.30799376964569,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      }
+    },
+    "iou_8x8_B8": {
+      "unitrack_lapjvx_loop": {
+        "batch_size": 8,
+        "lat_mean_ms": 1.2699636220932007,
+        "lat_std_ms": 0.06492182612419128,
+        "lat_median_ms": 1.2483359575271606,
+        "lat_per_problem_us": 156.04199469089508,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      },
+      "unitrack_lapjvs_loop": {
+        "batch_size": 8,
+        "lat_mean_ms": 1.29137122631073,
+        "lat_std_ms": 0.05110378935933113,
+        "lat_median_ms": 1.26841402053833,
+        "lat_per_problem_us": 158.55175256729126,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      },
+      "unitrack_lapjvx_batch": {
+        "batch_size": 8,
+        "lat_mean_ms": 1.3573333024978638,
+        "lat_std_ms": 0.04696135222911835,
+        "lat_median_ms": 1.3566310405731201,
+        "lat_per_problem_us": 169.57888007164001,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      },
+      "unitrack_lapjvs_batch": {
+        "batch_size": 8,
+        "lat_mean_ms": 1.375549554824829,
+        "lat_std_ms": 0.09748608618974686,
+        "lat_median_ms": 1.3531849384307861,
+        "lat_per_problem_us": 169.14811730384827,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      },
+      "hungarian_loop_cpu": {
+        "batch_size": 8,
+        "lat_mean_ms": 0.5257923007011414,
+        "lat_std_ms": 0.005969486199319363,
+        "lat_median_ms": 0.5263569951057434,
+        "lat_per_problem_us": 65.79462438821793,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      }
+    },
+    "iou_8x12_B8": {
+      "unitrack_lapjvx_loop": {
+        "batch_size": 8,
+        "lat_mean_ms": 1.228924036026001,
+        "lat_std_ms": 0.015760907903313637,
+        "lat_median_ms": 1.2267550230026245,
+        "lat_per_problem_us": 153.34437787532806,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      },
+      "unitrack_lapjvs_loop": {
+        "batch_size": 8,
+        "lat_mean_ms": 1.480154275894165,
+        "lat_std_ms": 0.12814180552959442,
+        "lat_median_ms": 1.5194190740585327,
+        "lat_per_problem_us": 189.9273842573166,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      },
+      "unitrack_lapjvx_batch": {
+        "batch_size": 8,
+        "lat_mean_ms": 1.2643018960952759,
+        "lat_std_ms": 0.03863023221492767,
+        "lat_median_ms": 1.240891933441162,
+        "lat_per_problem_us": 155.11149168014526,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      },
+      "unitrack_lapjvs_batch": {
+        "batch_size": 8,
+        "lat_mean_ms": 1.4584068059921265,
+        "lat_std_ms": 0.12131387740373611,
+        "lat_median_ms": 1.482578992843628,
+        "lat_per_problem_us": 185.3223741054535,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      },
+      "hungarian_loop_cpu": {
+        "batch_size": 8,
+        "lat_mean_ms": 0.5754203796386719,
+        "lat_std_ms": 0.06050323694944382,
+        "lat_median_ms": 0.5479789972305298,
+        "lat_per_problem_us": 68.49737465381622,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      }
+    },
+    "iou_16x16_B1": {
+      "unitrack_lapjvx_loop": {
+        "batch_size": 1,
+        "lat_mean_ms": 0.16014130413532257,
+        "lat_std_ms": 0.005221320781856775,
+        "lat_median_ms": 0.1572280079126358,
+        "lat_per_problem_us": 157.2280079126358,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      },
+      "unitrack_lapjvs_loop": {
+        "batch_size": 1,
+        "lat_mean_ms": 0.16275230050086975,
+        "lat_std_ms": 0.0038926999550312757,
+        "lat_median_ms": 0.1620670109987259,
+        "lat_per_problem_us": 162.0670109987259,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      },
+      "unitrack_lapjvx_batch": {
+        "batch_size": 1,
+        "lat_mean_ms": 0.1980161964893341,
+        "lat_std_ms": 0.039865586906671524,
+        "lat_median_ms": 0.17349901795387268,
+        "lat_per_problem_us": 173.49901795387268,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      },
+      "unitrack_lapjvs_batch": {
+        "batch_size": 1,
+        "lat_mean_ms": 0.16222742199897766,
+        "lat_std_ms": 0.005631436128169298,
+        "lat_median_ms": 0.16032299399375916,
+        "lat_per_problem_us": 160.32299399375916,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      },
+      "hungarian_loop_cpu": {
+        "batch_size": 1,
+        "lat_mean_ms": 0.13624700903892517,
+        "lat_std_ms": 0.0048289005644619465,
+        "lat_median_ms": 0.13511601090431213,
+        "lat_per_problem_us": 135.11601090431213,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      }
+    },
+    "iou_16x16_B8": {
+      "unitrack_lapjvx_loop": {
+        "batch_size": 8,
+        "lat_mean_ms": 1.3221185207366943,
+        "lat_std_ms": 0.14273878931999207,
+        "lat_median_ms": 1.2663600444793701,
+        "lat_per_problem_us": 158.29500555992126,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      },
+      "unitrack_lapjvs_loop": {
+        "batch_size": 8,
+        "lat_mean_ms": 1.346270203590393,
+        "lat_std_ms": 0.07841309905052185,
+        "lat_median_ms": 1.3413119316101074,
+        "lat_per_problem_us": 167.66399145126343,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      },
+      "unitrack_lapjvx_batch": {
+        "batch_size": 8,
+        "lat_mean_ms": 1.2749661207199097,
+        "lat_std_ms": 0.04429588466882706,
+        "lat_median_ms": 1.257863998413086,
+        "lat_per_problem_us": 157.23299980163574,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      },
+      "unitrack_lapjvs_batch": {
+        "batch_size": 8,
+        "lat_mean_ms": 1.2733701467514038,
+        "lat_std_ms": 0.046734295785427094,
+        "lat_median_ms": 1.2497479915618896,
+        "lat_per_problem_us": 156.2184989452362,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      },
+      "hungarian_loop_cpu": {
+        "batch_size": 8,
+        "lat_mean_ms": 1.1371310949325562,
+        "lat_std_ms": 0.03875260427594185,
+        "lat_median_ms": 1.12254798412323,
+        "lat_per_problem_us": 140.31849801540375,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      }
+    },
+    "iou_16x24_B8": {
+      "unitrack_lapjvx_loop": {
+        "batch_size": 8,
+        "lat_mean_ms": 1.3120707273483276,
+        "lat_std_ms": 0.07022262364625931,
+        "lat_median_ms": 1.2821099758148193,
+        "lat_per_problem_us": 160.26374697685242,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      },
+      "unitrack_lapjvs_loop": {
+        "batch_size": 8,
+        "lat_mean_ms": 1.561938762664795,
+        "lat_std_ms": 0.21933646500110626,
+        "lat_median_ms": 1.4296289682388306,
+        "lat_per_problem_us": 178.70362102985382,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      },
+      "unitrack_lapjvx_batch": {
+        "batch_size": 8,
+        "lat_mean_ms": 1.2930755615234375,
+        "lat_std_ms": 0.034878965467214584,
+        "lat_median_ms": 1.2783030271530151,
+        "lat_per_problem_us": 159.7878783941269,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      },
+      "unitrack_lapjvs_batch": {
+        "batch_size": 8,
+        "lat_mean_ms": 1.4080373048782349,
+        "lat_std_ms": 0.1794825792312622,
+        "lat_median_ms": 1.2961560487747192,
+        "lat_per_problem_us": 162.0195060968399,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      },
+      "hungarian_loop_cpu": {
+        "batch_size": 8,
+        "lat_mean_ms": 1.1371972560882568,
+        "lat_std_ms": 0.05583056062459946,
+        "lat_median_ms": 1.1290899515151978,
+        "lat_per_problem_us": 141.13624393939972,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      }
+    },
+    "iou_32x32_B1": {
+      "unitrack_lapjvx_loop": {
+        "batch_size": 1,
+        "lat_mean_ms": 0.16273729503154755,
+        "lat_std_ms": 0.005323507357388735,
+        "lat_median_ms": 0.16024400293827057,
+        "lat_per_problem_us": 160.24400293827057,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      },
+      "unitrack_lapjvs_loop": {
+        "batch_size": 1,
+        "lat_mean_ms": 0.16709159314632416,
+        "lat_std_ms": 0.005452578887343407,
+        "lat_median_ms": 0.16380000114440918,
+        "lat_per_problem_us": 163.80000114440918,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      },
+      "unitrack_lapjvx_batch": {
+        "batch_size": 1,
+        "lat_mean_ms": 0.16627709567546844,
+        "lat_std_ms": 0.00429588882252574,
+        "lat_median_ms": 0.16467200219631195,
+        "lat_per_problem_us": 164.67200219631195,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      },
+      "unitrack_lapjvs_batch": {
+        "batch_size": 1,
+        "lat_mean_ms": 0.16970670223236084,
+        "lat_std_ms": 0.008748861961066723,
+        "lat_median_ms": 0.16475200653076172,
+        "lat_per_problem_us": 164.75200653076172,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      },
+      "hungarian_loop_cpu": {
+        "batch_size": 1,
+        "lat_mean_ms": 0.1531812995672226,
+        "lat_std_ms": 0.031222287565469742,
+        "lat_median_ms": 0.1400350034236908,
+        "lat_per_problem_us": 140.0350034236908,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      }
+    },
+    "iou_32x32_B8": {
+      "unitrack_lapjvx_loop": {
+        "batch_size": 8,
+        "lat_mean_ms": 1.3015587329864502,
+        "lat_std_ms": 0.009692663326859474,
+        "lat_median_ms": 1.2972079515457153,
+        "lat_per_problem_us": 162.15099394321442,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      },
+      "unitrack_lapjvs_loop": {
+        "batch_size": 8,
+        "lat_mean_ms": 1.327350378036499,
+        "lat_std_ms": 0.01225237175822258,
+        "lat_median_ms": 1.322706937789917,
+        "lat_per_problem_us": 165.33836722373962,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      },
+      "unitrack_lapjvx_batch": {
+        "batch_size": 8,
+        "lat_mean_ms": 1.3508861064910889,
+        "lat_std_ms": 0.10707314312458038,
+        "lat_median_ms": 1.3091009855270386,
+        "lat_per_problem_us": 163.63762319087982,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      },
+      "unitrack_lapjvs_batch": {
+        "batch_size": 8,
+        "lat_mean_ms": 1.4926109313964844,
+        "lat_std_ms": 0.16410639882087708,
+        "lat_median_ms": 1.4616199731826782,
+        "lat_per_problem_us": 182.70249664783478,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      },
+      "hungarian_loop_cpu": {
+        "batch_size": 8,
+        "lat_mean_ms": 1.244962453842163,
+        "lat_std_ms": 0.029167769476771355,
+        "lat_median_ms": 1.2308530807495117,
+        "lat_per_problem_us": 153.85663509368896,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      }
+    },
+    "iou_32x48_B8": {
+      "unitrack_lapjvx_loop": {
+        "batch_size": 8,
+        "lat_mean_ms": 1.4107816219329834,
+        "lat_std_ms": 0.112838514149189,
+        "lat_median_ms": 1.372560977935791,
+        "lat_per_problem_us": 171.57012224197388,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      },
+      "unitrack_lapjvs_loop": {
+        "batch_size": 8,
+        "lat_mean_ms": 1.404868721961975,
+        "lat_std_ms": 0.015384401194751263,
+        "lat_median_ms": 1.3994020223617554,
+        "lat_per_problem_us": 174.92525279521942,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      },
+      "unitrack_lapjvx_batch": {
+        "batch_size": 8,
+        "lat_mean_ms": 1.6691019535064697,
+        "lat_std_ms": 0.2705638110637665,
+        "lat_median_ms": 1.7310700416564941,
+        "lat_per_problem_us": 216.38375520706177,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      },
+      "unitrack_lapjvs_batch": {
+        "batch_size": 8,
+        "lat_mean_ms": 1.4667975902557373,
+        "lat_std_ms": 0.14400562644004822,
+        "lat_median_ms": 1.4066460132598877,
+        "lat_per_problem_us": 175.83075165748596,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      },
+      "hungarian_loop_cpu": {
+        "batch_size": 8,
+        "lat_mean_ms": 1.236469030380249,
+        "lat_std_ms": 0.11137882620096207,
+        "lat_median_ms": 1.19942307472229,
+        "lat_per_problem_us": 149.92788434028625,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      }
+    },
+    "iou_64x64_B1": {
+      "unitrack_lapjvx_loop": {
+        "batch_size": 1,
+        "lat_mean_ms": 0.33455678820610046,
+        "lat_std_ms": 0.0699588730931282,
+        "lat_median_ms": 0.30034899711608887,
+        "lat_per_problem_us": 300.34899711608887,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      },
+      "unitrack_lapjvs_loop": {
+        "batch_size": 1,
+        "lat_mean_ms": 0.30176469683647156,
+        "lat_std_ms": 0.008839708752930164,
+        "lat_median_ms": 0.29722297191619873,
+        "lat_per_problem_us": 297.22297191619873,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      },
+      "unitrack_lapjvx_batch": {
+        "batch_size": 1,
+        "lat_mean_ms": 0.37413090467453003,
+        "lat_std_ms": 0.03361434489488602,
+        "lat_median_ms": 0.36096397042274475,
+        "lat_per_problem_us": 360.96397042274475,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      },
+      "unitrack_lapjvs_batch": {
+        "batch_size": 1,
+        "lat_mean_ms": 0.3035661280155182,
+        "lat_std_ms": 0.008834656327962875,
+        "lat_median_ms": 0.30298396944999695,
+        "lat_per_problem_us": 302.98396944999695,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      },
+      "hungarian_loop_cpu": {
+        "batch_size": 1,
+        "lat_mean_ms": 0.21833689510822296,
+        "lat_std_ms": 0.009475612081587315,
+        "lat_median_ms": 0.21676099300384521,
+        "lat_per_problem_us": 216.76099300384521,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      }
+    },
+    "iou_64x64_B8": {
+      "unitrack_lapjvx_loop": {
+        "batch_size": 8,
+        "lat_mean_ms": 1.7551071643829346,
+        "lat_std_ms": 0.011625515297055244,
+        "lat_median_ms": 1.7503169775009155,
+        "lat_per_problem_us": 218.78962218761444,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      },
+      "unitrack_lapjvs_loop": {
+        "batch_size": 8,
+        "lat_mean_ms": 1.8003349304199219,
+        "lat_std_ms": 0.04581229016184807,
+        "lat_median_ms": 1.7886099815368652,
+        "lat_per_problem_us": 223.57624769210815,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      },
+      "unitrack_lapjvx_batch": {
+        "batch_size": 8,
+        "lat_mean_ms": 1.8480451107025146,
+        "lat_std_ms": 0.11367686837911606,
+        "lat_median_ms": 1.7801029682159424,
+        "lat_per_problem_us": 222.5128710269928,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      },
+      "unitrack_lapjvs_batch": {
+        "batch_size": 8,
+        "lat_mean_ms": 1.7917072772979736,
+        "lat_std_ms": 0.08476335555315018,
+        "lat_median_ms": 1.7500859498977661,
+        "lat_per_problem_us": 218.76074373722076,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      },
+      "hungarian_loop_cpu": {
+        "batch_size": 8,
+        "lat_mean_ms": 1.9263635873794556,
+        "lat_std_ms": 0.024563821032643318,
+        "lat_median_ms": 1.9145580530166626,
+        "lat_per_problem_us": 239.31975662708282,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      }
+    },
+    "iou_64x96_B8": {
+      "unitrack_lapjvx_loop": {
+        "batch_size": 8,
+        "lat_mean_ms": 1.7253587245941162,
+        "lat_std_ms": 0.09623977541923523,
+        "lat_median_ms": 1.6901429891586304,
+        "lat_per_problem_us": 211.2678736448288,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      },
+      "unitrack_lapjvs_loop": {
+        "batch_size": 8,
+        "lat_mean_ms": 1.723417043685913,
+        "lat_std_ms": 0.05115056037902832,
+        "lat_median_ms": 1.704198956489563,
+        "lat_per_problem_us": 213.02486956119537,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      },
+      "unitrack_lapjvx_batch": {
+        "batch_size": 8,
+        "lat_mean_ms": 1.7235031127929688,
+        "lat_std_ms": 0.12208119034767151,
+        "lat_median_ms": 1.6790920495986938,
+        "lat_per_problem_us": 209.88650619983673,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      },
+      "unitrack_lapjvs_batch": {
+        "batch_size": 8,
+        "lat_mean_ms": 1.7255992889404297,
+        "lat_std_ms": 0.11235668510198593,
+        "lat_median_ms": 1.675845980644226,
+        "lat_per_problem_us": 209.48074758052826,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      },
+      "hungarian_loop_cpu": {
+        "batch_size": 8,
+        "lat_mean_ms": 1.6242892742156982,
+        "lat_std_ms": 0.11680691689252853,
+        "lat_median_ms": 1.5663779973983765,
+        "lat_per_problem_us": 195.79724967479706,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      }
+    },
+    "iou_128x128_B1": {
+      "unitrack_lapjvx_loop": {
+        "batch_size": 1,
+        "lat_mean_ms": 0.31957149505615234,
+        "lat_std_ms": 0.0049515170976519585,
+        "lat_median_ms": 0.3173309862613678,
+        "lat_per_problem_us": 317.3309862613678,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      },
+      "unitrack_lapjvs_loop": {
+        "batch_size": 1,
+        "lat_mean_ms": 0.3211764693260193,
+        "lat_std_ms": 0.0067891585640609264,
+        "lat_median_ms": 0.31813299655914307,
+        "lat_per_problem_us": 318.13299655914307,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      },
+      "unitrack_lapjvx_batch": {
+        "batch_size": 1,
+        "lat_mean_ms": 0.35846632719039917,
+        "lat_std_ms": 0.07251984626054764,
+        "lat_median_ms": 0.3220599889755249,
+        "lat_per_problem_us": 322.0599889755249,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      },
+      "unitrack_lapjvs_batch": {
+        "batch_size": 1,
+        "lat_mean_ms": 0.3198239505290985,
+        "lat_std_ms": 0.005615974776446819,
+        "lat_median_ms": 0.31927499175071716,
+        "lat_per_problem_us": 319.27499175071716,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      },
+      "hungarian_loop_cpu": {
+        "batch_size": 1,
+        "lat_mean_ms": 0.6218693852424622,
+        "lat_std_ms": 0.05100412666797638,
+        "lat_median_ms": 0.6098660230636597,
+        "lat_per_problem_us": 609.8660230636597,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      }
+    },
+    "iou_128x128_B4": {
+      "unitrack_lapjvx_loop": {
+        "batch_size": 4,
+        "lat_mean_ms": 1.4388219118118286,
+        "lat_std_ms": 0.06684698909521103,
+        "lat_median_ms": 1.4122869968414307,
+        "lat_per_problem_us": 353.07174921035767,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      },
+      "unitrack_lapjvs_loop": {
+        "batch_size": 4,
+        "lat_mean_ms": 1.4343712329864502,
+        "lat_std_ms": 0.04815139248967171,
+        "lat_median_ms": 1.418228030204773,
+        "lat_per_problem_us": 354.55700755119324,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      },
+      "unitrack_lapjvx_batch": {
+        "batch_size": 4,
+        "lat_mean_ms": 1.5150710344314575,
+        "lat_std_ms": 0.13594695925712585,
+        "lat_median_ms": 1.4696849584579468,
+        "lat_per_problem_us": 367.4212396144867,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      },
+      "unitrack_lapjvs_batch": {
+        "batch_size": 4,
+        "lat_mean_ms": 1.4430307149887085,
+        "lat_std_ms": 0.054459646344184875,
+        "lat_median_ms": 1.420282006263733,
+        "lat_per_problem_us": 355.0705015659332,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      },
+      "hungarian_loop_cpu": {
+        "batch_size": 4,
+        "lat_mean_ms": 2.345423936843872,
+        "lat_std_ms": 0.0785069689154625,
+        "lat_median_ms": 2.300729990005493,
+        "lat_per_problem_us": 575.1824975013733,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      }
+    },
+    "iou_128x192_B4": {
+      "unitrack_lapjvx_loop": {
+        "batch_size": 4,
+        "lat_mean_ms": 1.4192605018615723,
+        "lat_std_ms": 0.030718142166733742,
+        "lat_median_ms": 1.4090999364852905,
+        "lat_per_problem_us": 352.27498412132263,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      },
+      "unitrack_lapjvs_loop": {
+        "batch_size": 4,
+        "lat_mean_ms": 1.4192125797271729,
+        "lat_std_ms": 0.014346648007631302,
+        "lat_median_ms": 1.4172660112380981,
+        "lat_per_problem_us": 354.31650280952454,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      },
+      "unitrack_lapjvx_batch": {
+        "batch_size": 4,
+        "lat_mean_ms": 1.6734672784805298,
+        "lat_std_ms": 0.12436467409133911,
+        "lat_median_ms": 1.659093976020813,
+        "lat_per_problem_us": 414.77349400520325,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      },
+      "unitrack_lapjvs_batch": {
+        "batch_size": 4,
+        "lat_mean_ms": 1.647282600402832,
+        "lat_std_ms": 0.1645895540714264,
+        "lat_median_ms": 1.6272939443588257,
+        "lat_per_problem_us": 406.8234860897064,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      },
+      "hungarian_loop_cpu": {
+        "batch_size": 4,
+        "lat_mean_ms": 1.7554906606674194,
+        "lat_std_ms": 0.04948624595999718,
+        "lat_median_ms": 1.7403579950332642,
+        "lat_per_problem_us": 435.08949875831604,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      }
+    },
+    "iou_256x256_B1": {
+      "unitrack_lapjvx_loop": {
+        "batch_size": 1,
+        "lat_mean_ms": 1.4143133163452148,
+        "lat_std_ms": 0.02793009951710701,
+        "lat_median_ms": 1.3996130228042603,
+        "lat_per_problem_us": 1399.6130228042603,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      },
+      "unitrack_lapjvs_loop": {
+        "batch_size": 1,
+        "lat_mean_ms": 1.4075562953948975,
+        "lat_std_ms": 0.011013956740498543,
+        "lat_median_ms": 1.4070260524749756,
+        "lat_per_problem_us": 1407.0260524749756,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      },
+      "unitrack_lapjvx_batch": {
+        "batch_size": 1,
+        "lat_mean_ms": 1.1505303382873535,
+        "lat_std_ms": 0.07449546456336975,
+        "lat_median_ms": 1.1184200048446655,
+        "lat_per_problem_us": 1118.4200048446655,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      },
+      "unitrack_lapjvs_batch": {
+        "batch_size": 1,
+        "lat_mean_ms": 1.1202881336212158,
+        "lat_std_ms": 0.11289389431476593,
+        "lat_median_ms": 1.0586559772491455,
+        "lat_per_problem_us": 1058.6559772491455,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      },
+      "hungarian_loop_cpu": {
+        "batch_size": 1,
+        "lat_mean_ms": 2.030017137527466,
+        "lat_std_ms": 0.06691086292266846,
+        "lat_median_ms": 1.9859329462051392,
+        "lat_per_problem_us": 1985.9329462051392,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      }
+    },
+    "iou_256x256_B4": {
+      "unitrack_lapjvx_loop": {
+        "batch_size": 4,
+        "lat_mean_ms": 7.305212497711182,
+        "lat_std_ms": 0.0547112338244915,
+        "lat_median_ms": 7.289844989776611,
+        "lat_per_problem_us": 1822.4612474441528,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      },
+      "unitrack_lapjvs_loop": {
+        "batch_size": 4,
+        "lat_mean_ms": 7.374605655670166,
+        "lat_std_ms": 0.08217232674360275,
+        "lat_median_ms": 7.353404998779297,
+        "lat_per_problem_us": 1838.3512496948242,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      },
+      "unitrack_lapjvx_batch": {
+        "batch_size": 4,
+        "lat_mean_ms": 5.824794292449951,
+        "lat_std_ms": 0.3925229609012604,
+        "lat_median_ms": 5.755667209625244,
+        "lat_per_problem_us": 1438.916802406311,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      },
+      "unitrack_lapjvs_batch": {
+        "batch_size": 4,
+        "lat_mean_ms": 5.776594161987305,
+        "lat_std_ms": 0.4662003517150879,
+        "lat_median_ms": 5.5763468742370605,
+        "lat_per_problem_us": 1394.0867185592651,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      },
+      "hungarian_loop_cpu": {
+        "batch_size": 4,
+        "lat_mean_ms": 8.546957015991211,
+        "lat_std_ms": 0.29351627826690674,
+        "lat_median_ms": 8.367927551269531,
+        "lat_per_problem_us": 2091.981887817383,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      }
+    },
+    "gated_32x32_B4": {
+      "unitrack_lapjvx_loop": {
+        "batch_size": 4,
+        "lat_mean_ms": 0.8166987299919128,
+        "lat_std_ms": 0.06643551588058472,
+        "lat_median_ms": 0.8150449991226196,
+        "lat_per_problem_us": 203.7612497806549,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      },
+      "unitrack_lapjvs_loop": {
+        "batch_size": 4,
+        "lat_mean_ms": 0.7136343121528625,
+        "lat_std_ms": 0.05637970194220543,
+        "lat_median_ms": 0.6809200048446655,
+        "lat_per_problem_us": 170.23000121116638,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      },
+      "unitrack_lapjvx_batch": {
+        "batch_size": 4,
+        "lat_mean_ms": 0.8078341484069824,
+        "lat_std_ms": 0.13741391897201538,
+        "lat_median_ms": 0.789385974407196,
+        "lat_per_problem_us": 197.346493601799,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      },
+      "unitrack_lapjvs_batch": {
+        "batch_size": 4,
+        "lat_mean_ms": 0.6696589589118958,
+        "lat_std_ms": 0.005677215754985809,
+        "lat_median_ms": 0.6681959629058838,
+        "lat_per_problem_us": 167.04899072647095,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      },
+      "hungarian_loop_cpu": {
+        "batch_size": 4,
+        "lat_mean_ms": 0.6188267469406128,
+        "lat_std_ms": 0.047919631004333496,
+        "lat_median_ms": 0.6014299988746643,
+        "lat_per_problem_us": 150.35749971866608,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      }
+    },
+    "gated_64x64_B4": {
+      "unitrack_lapjvx_loop": {
+        "batch_size": 4,
+        "lat_mean_ms": 0.8244394063949585,
+        "lat_std_ms": 0.008519519120454788,
+        "lat_median_ms": 0.824882984161377,
+        "lat_per_problem_us": 206.22074604034424,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      },
+      "unitrack_lapjvs_loop": {
+        "batch_size": 4,
+        "lat_mean_ms": 0.8352959752082825,
+        "lat_std_ms": 0.011826886795461178,
+        "lat_median_ms": 0.834210991859436,
+        "lat_per_problem_us": 208.552747964859,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      },
+      "unitrack_lapjvx_batch": {
+        "batch_size": 4,
+        "lat_mean_ms": 0.8438073396682739,
+        "lat_std_ms": 0.06985501945018768,
+        "lat_median_ms": 0.8197939991950989,
+        "lat_per_problem_us": 204.94849979877472,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      },
+      "unitrack_lapjvs_batch": {
+        "batch_size": 4,
+        "lat_mean_ms": 0.855571448802948,
+        "lat_std_ms": 0.04966286942362785,
+        "lat_median_ms": 0.8329090476036072,
+        "lat_per_problem_us": 208.2272619009018,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      },
+      "hungarian_loop_cpu": {
+        "batch_size": 4,
+        "lat_mean_ms": 0.8690167665481567,
+        "lat_std_ms": 0.011450345627963543,
+        "lat_median_ms": 0.8665220141410828,
+        "lat_per_problem_us": 216.6305035352707,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      }
+    },
+    "gated_128x128_B4": {
+      "unitrack_lapjvx_loop": {
+        "batch_size": 4,
+        "lat_mean_ms": 1.5483554601669312,
+        "lat_std_ms": 0.008418714627623558,
+        "lat_median_ms": 1.5470420122146606,
+        "lat_per_problem_us": 386.76050305366516,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      },
+      "unitrack_lapjvs_loop": {
+        "batch_size": 4,
+        "lat_mean_ms": 1.6563799381256104,
+        "lat_std_ms": 0.1754147708415985,
+        "lat_median_ms": 1.5768280029296875,
+        "lat_per_problem_us": 394.2070007324219,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      },
+      "unitrack_lapjvx_batch": {
+        "batch_size": 4,
+        "lat_mean_ms": 1.6602723598480225,
+        "lat_std_ms": 0.12783771753311157,
+        "lat_median_ms": 1.5901930332183838,
+        "lat_per_problem_us": 397.54825830459595,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      },
+      "unitrack_lapjvs_batch": {
+        "batch_size": 4,
+        "lat_mean_ms": 1.5719436407089233,
+        "lat_std_ms": 0.043799277395009995,
+        "lat_median_ms": 1.5567500591278076,
+        "lat_per_problem_us": 389.1875147819519,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      },
+      "hungarian_loop_cpu": {
+        "batch_size": 4,
+        "lat_mean_ms": 2.1612226963043213,
+        "lat_std_ms": 0.05733778700232506,
+        "lat_median_ms": 2.1379919052124023,
+        "lat_per_problem_us": 534.4979763031006,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mib": null
+      }
+    }
+  }
+}

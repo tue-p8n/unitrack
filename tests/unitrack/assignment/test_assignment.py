@@ -7,6 +7,9 @@ import time
 import pytest
 import torch
 from unitrack import assignment
+from unitrack.assignment import lap
+
+_CUDA_AVAILABLE = torch.cuda.is_available()
 
 
 @pytest.fixture(
@@ -28,18 +31,38 @@ def cost_matrix(request):
     return torch.rand(shape, dtype=torch.float) ** 10
 
 
+_CUDA_SKIP = pytest.mark.skipif(not _CUDA_AVAILABLE, reason="CUDA required")
+
+
 @pytest.fixture(
     params=[
         assignment.Greedy,
         assignment.Hungarian,
         assignment.Auction,
         assignment.Jonker,
+        assignment.SoftAssignment,
+        pytest.param(
+            lambda: lap.LAP(backend=lap.Backend.CLASSICAL),
+            marks=_CUDA_SKIP,
+        ),
+        pytest.param(
+            lambda: lap.LAP(backend=lap.Backend.HYBRID),
+            marks=_CUDA_SKIP,
+        ),
+        pytest.param(
+            lambda: lap.LAP(backend=lap.Backend.TREE),
+            marks=_CUDA_SKIP,
+        ),
     ],
     ids=(
         "alg:greedy",
         "alg:hungarian",
         "alg:auction",
         "alg:jonker",
+        "alg:soft",
+        "alg:lap-classical",
+        "alg:lap-hybrid",
+        "alg:lap-tree",
     ),
     scope="module",
 )

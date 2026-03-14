@@ -1,0 +1,575 @@
+{
+  "meta": {
+    "timestamp": "2026-06-10T14:38:22.503650+00:00",
+    "cuda_available": false,
+    "torch_version": "2.12.0+cu130",
+    "gpu": null,
+    "dataset_size": 50
+  },
+  "results": {
+    "iou_8x8": {
+      "Greedy": {
+        "lat_mean": 0.5240650177001953,
+        "lat_std": 0.01694670133292675,
+        "lat_median": 0.5306659936904907,
+        "cost_mean": 1.3070130348205566,
+        "cost_std": 0.25625184178352356,
+        "mem_peak_mean": null,
+        "mem_peak_std": null
+      },
+      "Hungarian": {
+        "lat_mean": 0.13067489862442017,
+        "lat_std": 0.009015258401632309,
+        "lat_median": 0.12494699656963348,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mean": null,
+        "mem_peak_std": null
+      },
+      "Auction": {
+        "lat_mean": 1.339733600616455,
+        "lat_std": 0.48529040813446045,
+        "lat_median": 1.2284380197525024,
+        "cost_mean": 1.0868773460388184,
+        "cost_std": 0.11860141903162003,
+        "mem_peak_mean": null,
+        "mem_peak_std": null
+      },
+      "Jonker": {
+        "lat_mean": 0.20728927850723267,
+        "lat_std": 0.007362275384366512,
+        "lat_median": 0.20479801297187805,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mean": null,
+        "mem_peak_std": null
+      },
+      "SoftAssignment": {
+        "lat_mean": 11.75973129272461,
+        "lat_std": 0.8728451728820801,
+        "lat_median": 11.480905532836914,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mean": null,
+        "mem_peak_std": null
+      }
+    },
+    "iou_32x32": {
+      "Greedy": {
+        "lat_mean": 1.2950505018234253,
+        "lat_std": 0.08931729197502136,
+        "lat_median": 1.2481859922409058,
+        "cost_mean": 1.9230270385742188,
+        "cost_std": 0.2575174868106842,
+        "mem_peak_mean": null,
+        "mem_peak_std": null
+      },
+      "Hungarian": {
+        "lat_mean": 0.20355276763439178,
+        "lat_std": 0.005100930575281382,
+        "lat_median": 0.2046480029821396,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mean": null,
+        "mem_peak_std": null
+      },
+      "Auction": {
+        "lat_mean": 4.508907318115234,
+        "lat_std": 1.7242766618728638,
+        "lat_median": 4.000600814819336,
+        "cost_mean": 1.2830231189727783,
+        "cost_std": 0.17370328307151794,
+        "mem_peak_mean": null,
+        "mem_peak_std": null
+      },
+      "Jonker": {
+        "lat_mean": 0.22008970379829407,
+        "lat_std": 0.007022775709629059,
+        "lat_median": 0.21895402669906616,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mean": null,
+        "mem_peak_std": null
+      },
+      "SoftAssignment": {
+        "lat_mean": 12.373400688171387,
+        "lat_std": 0.42926856875419617,
+        "lat_median": 12.22787094116211,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mean": null,
+        "mem_peak_std": null
+      }
+    },
+    "iou_64x64": {
+      "Greedy": {
+        "lat_mean": 2.465337038040161,
+        "lat_std": 0.14851965010166168,
+        "lat_median": 2.491811990737915,
+        "cost_mean": 2.1337645053863525,
+        "cost_std": 0.268311083316803,
+        "mem_peak_mean": null,
+        "mem_peak_std": null
+      },
+      "Hungarian": {
+        "lat_mean": 0.2825325131416321,
+        "lat_std": 0.013034112751483917,
+        "lat_median": 0.28022098541259766,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mean": null,
+        "mem_peak_std": null
+      },
+      "Auction": {
+        "lat_mean": 6.824288368225098,
+        "lat_std": 1.755297064781189,
+        "lat_median": 6.660512924194336,
+        "cost_mean": 1.3202717304229736,
+        "cost_std": 0.12676703929901123,
+        "mem_peak_mean": null,
+        "mem_peak_std": null
+      },
+      "Jonker": {
+        "lat_mean": 0.2618473768234253,
+        "lat_std": 0.021931838244199753,
+        "lat_median": 0.254692018032074,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mean": null,
+        "mem_peak_std": null
+      },
+      "SoftAssignment": {
+        "lat_mean": 15.6096773147583,
+        "lat_std": 0.709019124507904,
+        "lat_median": 15.52272891998291,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mean": null,
+        "mem_peak_std": null
+      }
+    },
+    "iou_128x128": {
+      "Greedy": {
+        "lat_mean": 5.509429454803467,
+        "lat_std": 0.173417866230011,
+        "lat_median": 5.445108890533447,
+        "cost_mean": 2.553157091140747,
+        "cost_std": 0.31384411454200745,
+        "mem_peak_mean": null,
+        "mem_peak_std": null
+      },
+      "Hungarian": {
+        "lat_mean": 0.6656684875488281,
+        "lat_std": 0.0479106530547142,
+        "lat_median": 0.653668999671936,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mean": null,
+        "mem_peak_std": null
+      },
+      "Auction": {
+        "lat_mean": 15.050464630126953,
+        "lat_std": 6.606471061706543,
+        "lat_median": 13.495394706726074,
+        "cost_mean": 1.434302806854248,
+        "cost_std": 0.15569531917572021,
+        "mem_peak_mean": null,
+        "mem_peak_std": null
+      },
+      "Jonker": {
+        "lat_mean": 0.4775792360305786,
+        "lat_std": 0.09795451909303665,
+        "lat_median": 0.4405139982700348,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mean": null,
+        "mem_peak_std": null
+      },
+      "SoftAssignment": {
+        "lat_mean": 22.191965103149414,
+        "lat_std": 1.6396644115447998,
+        "lat_median": 22.57108497619629,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mean": null,
+        "mem_peak_std": null
+      }
+    },
+    "iou_256x256": {
+      "Greedy": {
+        "lat_mean": 19.048410415649414,
+        "lat_std": 0.6759334802627563,
+        "lat_median": 19.09088897705078,
+        "cost_mean": 2.9629998207092285,
+        "cost_std": 0.30767205357551575,
+        "mem_peak_mean": null,
+        "mem_peak_std": null
+      },
+      "Hungarian": {
+        "lat_mean": 2.746063470840454,
+        "lat_std": 0.22125783562660217,
+        "lat_median": 2.765089988708496,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mean": null,
+        "mem_peak_std": null
+      },
+      "Auction": {
+        "lat_mean": 29.53754425048828,
+        "lat_std": 11.16113567352295,
+        "lat_median": 26.363393783569336,
+        "cost_mean": 1.468305230140686,
+        "cost_std": 0.10338567942380905,
+        "mem_peak_mean": null,
+        "mem_peak_std": null
+      },
+      "Jonker": {
+        "lat_mean": 1.9713027477264404,
+        "lat_std": 0.4982844293117523,
+        "lat_median": 1.8710919618606567,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mean": null,
+        "mem_peak_std": null
+      },
+      "SoftAssignment": {
+        "lat_mean": 37.630088806152344,
+        "lat_std": 2.5586941242218018,
+        "lat_median": 39.214595794677734,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mean": null,
+        "mem_peak_std": null
+      }
+    },
+    "cdist_64x64": {
+      "Greedy": {
+        "lat_mean": 2.355426549911499,
+        "lat_std": 0.1007888913154602,
+        "lat_median": 2.3311281204223633,
+        "cost_mean": 1.2280595302581787,
+        "cost_std": 0.05254196375608444,
+        "mem_peak_mean": null,
+        "mem_peak_std": null
+      },
+      "Hungarian": {
+        "lat_mean": 0.30062657594680786,
+        "lat_std": 0.027173910290002823,
+        "lat_median": 0.29793497920036316,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mean": null,
+        "mem_peak_std": null
+      },
+      "Auction": {
+        "lat_mean": 14.069677352905273,
+        "lat_std": 8.813775062561035,
+        "lat_median": 12.041210174560547,
+        "cost_mean": 1.1839683055877686,
+        "cost_std": 0.061267632991075516,
+        "mem_peak_mean": null,
+        "mem_peak_std": null
+      },
+      "Jonker": {
+        "lat_mean": 0.9534866213798523,
+        "lat_std": 0.5054148435592651,
+        "lat_median": 0.8190909624099731,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mean": null,
+        "mem_peak_std": null
+      },
+      "SoftAssignment": {
+        "lat_mean": 20.183740615844727,
+        "lat_std": 0.739570140838623,
+        "lat_median": 20.037450790405273,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mean": null,
+        "mem_peak_std": null
+      }
+    },
+    "cdist_128x128": {
+      "Greedy": {
+        "lat_mean": 5.47249698638916,
+        "lat_std": 0.11832236498594284,
+        "lat_median": 5.463202953338623,
+        "cost_mean": 1.2584044933319092,
+        "cost_std": 0.053642388433218,
+        "mem_peak_mean": null,
+        "mem_peak_std": null
+      },
+      "Hungarian": {
+        "lat_mean": 0.799018383026123,
+        "lat_std": 0.10492660850286484,
+        "lat_median": 0.7758210301399231,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mean": null,
+        "mem_peak_std": null
+      },
+      "Auction": {
+        "lat_mean": 33.3909797668457,
+        "lat_std": 35.75324630737305,
+        "lat_median": 25.62344741821289,
+        "cost_mean": 1.2239741086959839,
+        "cost_std": 0.05490683764219284,
+        "mem_peak_mean": null,
+        "mem_peak_std": null
+      },
+      "Jonker": {
+        "lat_mean": 5.921756744384766,
+        "lat_std": 2.6870644092559814,
+        "lat_median": 5.650298118591309,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mean": null,
+        "mem_peak_std": null
+      },
+      "SoftAssignment": {
+        "lat_mean": 26.2974796295166,
+        "lat_std": 0.9278856515884399,
+        "lat_median": 26.141569137573242,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mean": null,
+        "mem_peak_std": null
+      }
+    },
+    "dense_64x16": {
+      "Greedy": {
+        "lat_mean": 0.7905523180961609,
+        "lat_std": 0.056873466819524765,
+        "lat_median": 0.7657809853553772,
+        "cost_mean": 1.0665432214736938,
+        "cost_std": 0.09414047747850418,
+        "mem_peak_mean": null,
+        "mem_peak_std": null
+      },
+      "Hungarian": {
+        "lat_mean": 0.17755679786205292,
+        "lat_std": 0.00456811860203743,
+        "lat_median": 0.1779480129480362,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mean": null,
+        "mem_peak_std": null
+      },
+      "Auction": {
+        "lat_mean": 0.572456419467926,
+        "lat_std": 0.10394439846277237,
+        "lat_median": 0.5030320286750793,
+        "cost_mean": 3.777261734008789,
+        "cost_std": 1.15013587474823,
+        "mem_peak_mean": null,
+        "mem_peak_std": null
+      },
+      "Jonker": {
+        "lat_mean": 0.2289263904094696,
+        "lat_std": 0.004017445724457502,
+        "lat_median": 0.22794099152088165,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mean": null,
+        "mem_peak_std": null
+      },
+      "SoftAssignment": {
+        "lat_mean": 12.679277420043945,
+        "lat_std": 0.49595338106155396,
+        "lat_median": 12.855392456054688,
+        "cost_mean": 3.7707672119140625,
+        "cost_std": 1.3056614398956299,
+        "mem_peak_mean": null,
+        "mem_peak_std": null
+      }
+    },
+    "dense_16x64": {
+      "Greedy": {
+        "lat_mean": 0.7872632741928101,
+        "lat_std": 0.06192389875650406,
+        "lat_median": 0.7628160119056702,
+        "cost_mean": 1.070726990699768,
+        "cost_std": 0.10629785805940628,
+        "mem_peak_mean": null,
+        "mem_peak_std": null
+      },
+      "Hungarian": {
+        "lat_mean": 0.17785848677158356,
+        "lat_std": 0.008218521252274513,
+        "lat_median": 0.17499199509620667,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mean": null,
+        "mem_peak_std": null
+      },
+      "Auction": {
+        "lat_mean": 0.7796006202697754,
+        "lat_std": 0.16520459949970245,
+        "lat_median": 0.7116460204124451,
+        "cost_mean": 1.0076912641525269,
+        "cost_std": 0.02380346693098545,
+        "mem_peak_mean": null,
+        "mem_peak_std": null
+      },
+      "Jonker": {
+        "lat_mean": 0.22862665355205536,
+        "lat_std": 0.018509097397327423,
+        "lat_median": 0.22136999666690826,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mean": null,
+        "mem_peak_std": null
+      },
+      "SoftAssignment": {
+        "lat_mean": 12.061689376831055,
+        "lat_std": 0.4260065257549286,
+        "lat_median": 12.042662620544434,
+        "cost_mean": 3.549288034439087,
+        "cost_std": 1.2660454511642456,
+        "mem_peak_mean": null,
+        "mem_peak_std": null
+      }
+    },
+    "gated_64x64": {
+      "Greedy": {
+        "lat_mean": 2.2894415855407715,
+        "lat_std": 0.13846419751644135,
+        "lat_median": 2.240225076675415,
+        "cost_mean": 1.1186678409576416,
+        "cost_std": 0.14270831644535065,
+        "mem_peak_mean": null,
+        "mem_peak_std": null
+      },
+      "Hungarian": {
+        "lat_mean": 0.27149850130081177,
+        "lat_std": 0.015025093220174313,
+        "lat_median": 0.27111300826072693,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mean": null,
+        "mem_peak_std": null
+      },
+      "Auction": {
+        "lat_mean": 95.64473724365234,
+        "lat_std": 362.3738098144531,
+        "lat_median": 8.824877738952637,
+        "cost_mean": 1.3008767366409302,
+        "cost_std": 0.1180131807923317,
+        "mem_peak_mean": null,
+        "mem_peak_std": null
+      },
+      "Jonker": {
+        "lat_mean": 0.27124935388565063,
+        "lat_std": 0.027605412527918816,
+        "lat_median": 0.26219698786735535,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mean": null,
+        "mem_peak_std": null
+      },
+      "SoftAssignment": {
+        "lat_mean": 14.897517204284668,
+        "lat_std": 0.2632233202457428,
+        "lat_median": 14.885335922241211,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mean": null,
+        "mem_peak_std": null
+      }
+    },
+    "gated_128x128": {
+      "Greedy": {
+        "lat_mean": 5.336312294006348,
+        "lat_std": 0.2266009896993637,
+        "lat_median": 5.258123874664307,
+        "cost_mean": 1.432214379310608,
+        "cost_std": 0.15478548407554626,
+        "mem_peak_mean": null,
+        "mem_peak_std": null
+      },
+      "Hungarian": {
+        "lat_mean": 0.6592892408370972,
+        "lat_std": 0.04465554282069206,
+        "lat_median": 0.6590290069580078,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mean": null,
+        "mem_peak_std": null
+      },
+      "Auction": {
+        "lat_mean": 241.44656372070312,
+        "lat_std": 492.3260498046875,
+        "lat_median": 21.270320892333984,
+        "cost_mean": 1.4416342973709106,
+        "cost_std": 0.19663867354393005,
+        "mem_peak_mean": null,
+        "mem_peak_std": null
+      },
+      "Jonker": {
+        "lat_mean": 0.5226538181304932,
+        "lat_std": 0.10728228837251663,
+        "lat_median": 0.48596999049186707,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mean": null,
+        "mem_peak_std": null
+      },
+      "SoftAssignment": {
+        "lat_mean": 19.30030632019043,
+        "lat_std": 0.4717164635658264,
+        "lat_median": 19.170469284057617,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mean": null,
+        "mem_peak_std": null
+      }
+    },
+    "empty_0x0": {
+      "Greedy": {
+        "lat_mean": 0.008336006663739681,
+        "lat_std": 0.0,
+        "lat_median": 0.008336006663739681,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mean": null,
+        "mem_peak_std": null
+      },
+      "Hungarian": {
+        "lat_mean": 0.009568990208208561,
+        "lat_std": 0.0,
+        "lat_median": 0.009568990208208561,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mean": null,
+        "mem_peak_std": null
+      },
+      "Auction": {
+        "lat_mean": 0.009037001058459282,
+        "lat_std": 0.0,
+        "lat_median": 0.009037001058459282,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mean": null,
+        "mem_peak_std": null
+      },
+      "Jonker": {
+        "lat_mean": 0.00880600418895483,
+        "lat_std": 0.0,
+        "lat_median": 0.00880600418895483,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mean": null,
+        "mem_peak_std": null
+      },
+      "SoftAssignment": {
+        "lat_mean": 0.009308015927672386,
+        "lat_std": 0.0,
+        "lat_median": 0.009308015927672386,
+        "cost_mean": 1.0,
+        "cost_std": 0.0,
+        "mem_peak_mean": null,
+        "mem_peak_std": null
+      }
+    }
+  }
+}

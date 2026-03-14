@@ -1,0 +1,3 @@
+-I/home/khwstolle/Projects/research/unitrack/.venv/lib/python3.13/site-packages/torch/include
+-I/home/khwstolle/Projects/research/unitrack/.venv/lib/python3.13/site-packages/torch/include/torch/csrc/api/include
+-I/nix/store/ci651krm2gbzk660hbwarqihhmzv9zly-cuda-merged-12.8/include

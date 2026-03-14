@@ -7,6 +7,7 @@ help:
 	@echo "coverage - run coverage"
 	@echo "build - build the package"
 	@echo "dist - build and upload the package"
+	@echo "docs - build the docyard documentation site to dist-docs"
 	@echo "clean - clean the project"
 
 clean:
@@ -38,8 +39,11 @@ coverage:
 build:
 	python -m build --wheel
 
-dist: 
+dist:
 	uv run twine check dist/*
 	uv run twine upload dist/*
 
-.PHONY: help install check test benchmark coverage dist build clean compile
+docs:
+	nix run .#docs-build
+
+.PHONY: help install check test benchmark coverage dist build clean compile docs

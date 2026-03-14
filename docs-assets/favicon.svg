@@ -1,0 +1,8 @@
+<svg width="30" height="32" viewBox="0 0 30 32" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Unitrack">
+  <title>Unitrack</title>
+  <path d="M2,27 L10,11 L18,23 L26,7" stroke="oklch(60% 0.17 195)" stroke-width="2.4" fill="none" stroke-linecap="round" opacity="0.55" />
+  <circle cx="2" cy="27" r="3.4" fill="oklch(68% 0.155 195)" />
+  <circle cx="10" cy="11" r="3.6" fill="oklch(60% 0.17 195)" />
+  <circle cx="18" cy="23" r="3.4" fill="oklch(60% 0.17 195)" />
+  <circle cx="26" cy="7" r="4.6" fill="oklch(45% 0.16 195)" />
+</svg>

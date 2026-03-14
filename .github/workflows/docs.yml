@@ -1,0 +1,65 @@
+name: Docs
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+# Permissions are scoped per-job below so the `build` job (which also runs on
+# untrusted PR pushes) never gets the elevated tokens required by the deploy.
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    # Per-ref group: pushing a new commit to the same branch/PR cancels the
+    # previous in-flight build, but builds on different refs run in parallel.
+    # Main-branch builds are never cancelled so an in-flight deploy completes.
+    concurrency:
+      group: docs-build-${{ github.ref }}
+      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@v17
+        with:
+          extra-conf: |
+            access-tokens = github.com=${{ secrets.DOCYARD_PAT }}
+
+      - name: Build docs site
+        env:
+          NODE_OPTIONS: --max-old-space-size=6144
+          NUXT_PUBLIC_SITE_URL: https://unitrack.khws.io
+          NUXT_APP_BASE_URL: /
+        run: nix run .#docs-build
+
+      - name: Upload Pages artifact
+        if: github.ref == 'refs/heads/main'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist-docs
+
+  deploy:
+    # Only deploy from main; PR builds exit after the `build` job above.
+    if: github.ref == 'refs/heads/main'
+    needs: build
+    runs-on: ubuntu-24.04
+    # Global group per GitHub's recommended Pages workflow: serialize every
+    # deployment so Pages is never left in a half-deployed state.
+    concurrency:
+      group: pages
+      cancel-in-progress: false
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

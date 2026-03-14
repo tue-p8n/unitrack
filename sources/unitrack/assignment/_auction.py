@@ -1,9 +1,4 @@
-r"""
-Implements the Auction algorithm for solving a linear assignment problem.
-
-The Auction algorithm is an iterative algorithm that solves the linear assignment
-problem by simulating an auction process.
-"""
+r"""Bertsekas-style auction algorithm for linear assignment."""
 
 from __future__ import annotations
 
@@ -11,6 +6,7 @@ import typing as T  # noqa: N812
 
 import torch
 import torch.fx
+import torchmatch.assignment as _tma
 import typing_extensions as TX  # noqa: N812
 
 from ._base import Assignment
@@ -19,23 +15,32 @@ __all__ = ["Auction", "auction_assignment"]
 
 
 class Auction(Assignment):
-    """Solves the linear assignment over a cost matrix using an auction algorithm."""
+    r"""
+    Bertsekas auction solver for the linear assignment problem.
+
+    Iteratively bids unassigned rows on their most-profitable columns until
+    every row holds an assignment or no further bids can be placed. Yields
+    an :math:`\epsilon`-optimal matching where ``epsilon`` scales with
+    ``bid_size``; smaller values approach the LAP optimum at the cost of
+    more iterations.
+    """
 
     bid_size: T.Final[float]
 
     def __init__(self, bid_size=0.05, *args, **kwargs):
         """
-        Initialize the Auction assignment module.
+        Initialize the auction solver.
 
         Parameters
         ----------
-        bid_size, optional
-            Step size of auction bids, which should be tuned according to the expected
-            domain of the cost matrix.
+        bid_size : float, optional
+            Auction bid step size. Tune to the dynamic range of the cost
+            matrix; values that are large relative to typical cost gaps
+            converge faster but produce coarser matches.
         *args
-            Positional arguments passed to the base class.
+            Positional arguments forwarded to :class:`Assignment`.
         **kwargs
-            Keyword arguments passed to the base class.
+            Keyword arguments forwarded to :class:`Assignment`.
 
         """
         super().__init__(*args, **kwargs)
@@ -50,198 +55,36 @@ class Auction(Assignment):
 
 
 @torch.no_grad()
-def auction_assignment_legacy(
+def auction_assignment(  # noqa: PLR0915
     cost_matrix: torch.Tensor, bid_size: float
 ) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
-    cost_matrix = cost_matrix * -1  # Convert cost matrix to profit matrix
-    cost_matrix = cost_matrix - cost_matrix.min()  # Normalize cost matrix
+    """
+    Solve a linear assignment problem using Bertsekas' auction algorithm.
 
-    # Compute epsilon based on bid_size and the smaller dimension of the cost matrix
-    eps = min(bid_size / min(cost_matrix.shape), 1e-3)
+    Converts the cost matrix to a profit matrix, then runs synchronous
+    bidding until every row (or every column, for rectangular problems) is
+    assigned. Non-finite entries mark forbidden pairs and are penalised
+    internally so the solver never selects them.
 
-    device = cost_matrix.device
+    Parameters
+    ----------
+    cost_matrix : torch.Tensor
+        ``(N, M)`` cost matrix. ``inf`` entries mark forbidden pairs.
+    bid_size : float
+        Auction bid step size. The internal ``epsilon`` is derived as
+        ``min(bid_size / min(N, M), 1e-3)``.
 
-    # Initialize cost, assignments, and bids tensors
-    cost = torch.zeros((1, cost_matrix.shape[1]), device=device)
-    ass = torch.full((cost_matrix.shape[0],), -1, device=device, dtype=torch.long)
-    bids = torch.zeros_like(cost_matrix)
+    Returns
+    -------
+    matches : torch.Tensor
+        ``(K, 2)`` long tensor of matched ``(row, col)`` indices.
+    unmatched_rows : torch.Tensor
+        ``(N - K,)`` long tensor of unmatched row indices.
+    unmatched_cols : torch.Tensor
+        ``(M - K,)`` long tensor of unmatched column indices.
 
-    # Iterate until all rows are assigned
-    while (ass < 0).sum() > max(0, cost_matrix.shape[0] - cost_matrix.shape[1]):
-        # Get indices of unassigned rows
-        unassigned = (ass == -1).nonzero().flatten()
+    """
+    return _tma.auction_assignment(cost_matrix, bid_size)
 
-        # Calculate value matrix for unassigned rows
-        value = cost_matrix[unassigned] - cost
-
-        # Get top 2 values and their indices for each unassigned row
-        top_value, top_idx = torch.where(value.isfinite(), value, 0).topk(2, dim=1)
-
-        # Calculate bid increments for the highest values
-        first_idx = top_idx[:, 0]
-        first_value, second_value = top_value[:, 0], top_value[:, 1]
-
-        bid_increments = first_value - second_value + eps
-
-        # Reset bids for unassigned rows
-        bids.index_fill_(0, unassigned, 0)
-        # bids.zero_()
-        # Update bids for the highest values
-        bids[unassigned] = bids[unassigned].scatter_(
-            dim=1, index=first_idx.view(-1, 1), src=bid_increments.view(-1, 1)
-        )
-
-        # Get columns with bidders
-        have_bidder = (bids > 0).int().sum(dim=0).nonzero().squeeze()
-
-        # Get maximum bids and their row indices
-        high_bids, high_bidders = bids[:, have_bidder].max(dim=0)
-        # high_bidders = unassigned[high_bidders.squeeze()]
-        high_bidders = high_bidders.squeeze()
-
-        # Update cost matrix with the high bids
-        cost[:, have_bidder] += high_bids
-
-        # Temporarily unassign rows that were previously assigned to the current
-        # winning columns
-        ass_prev = (ass.view(-1, 1) == have_bidder.view(1, -1)).sum(dim=1).nonzero()
-        ass[ass_prev.squeeze()] = -1
-
-        # Assign high bidders to the winning columns
-        ass[high_bidders] = have_bidder.squeeze()
-
-        # Set matched rows in the cost matrix to infinity
-        # cost_matrix[high_bidders, :] = torch.inf
-        # cost_matrix[:, have_bidder] = torch.inf
-
-    # Get matches, unmatched_rows, and unmatched_cols
-    idx = torch.arange(ass.numel())
-    matches = torch.stack([idx, ass], dim=1)
-    matches = matches[ass >= 0]
-    unmatched_rows = ass[ass < 0]
-    unmatched_cols = (
-        (torch.arange(cost_matrix.shape[1])[None, :] != ass[:, None])
-        .all(dim=0)
-        .nonzero()
-        .squeeze()
-    )
-
-    return matches, unmatched_rows, unmatched_cols
-
-
-@torch.no_grad()
-def auction_assignment(
-    cost_matrix: torch.Tensor, bid_size: float
-) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
-    device = cost_matrix.device
-    rows, cols = cost_matrix.shape
-
-    # 1. Edge Case: Empty matrix (Fixes ZeroDivisionError)
-    if rows == 0 or cols == 0:
-        matches = torch.empty((0, 2), dtype=torch.long, device=device)
-        unmatched_rows = torch.arange(rows, dtype=torch.long, device=device)
-        unmatched_cols = torch.arange(cols, dtype=torch.long, device=device)
-        return matches, unmatched_rows, unmatched_cols
-
-    # 2. Mask invalid assignments (Fixes NaN crash on inf values)
-    valid_mask = torch.isfinite(cost_matrix)
-    if not valid_mask.any():
-        # If no valid matches exist, return immediately
-        matches = torch.empty((0, 2), dtype=torch.long, device=device)
-        unmatched_rows = torch.arange(rows, dtype=torch.long, device=device)
-        unmatched_cols = torch.arange(cols, dtype=torch.long, device=device)
-        return matches, unmatched_rows, unmatched_cols
-
-    # Replace inf with a heavily penalized finite dummy cost for the solver
-    max_valid_cost = cost_matrix[valid_mask].max()
-    safe_cost_matrix = torch.where(valid_mask, cost_matrix, max_valid_cost + 1e5)
-
-    # Convert cost matrix to profit matrix and normalize
-    profit_matrix = safe_cost_matrix * -1
-    profit_matrix = profit_matrix - profit_matrix.min()
-
-    # Compute epsilon safely
-    eps = min(bid_size / min(rows, cols), 1e-3)
-
-    # Initialize cost, assignments, and bids tensors
-    cost = torch.zeros((1, cols), device=device)
-    ass = torch.full((rows,), -1, device=device, dtype=torch.long)
-    bids = torch.zeros_like(profit_matrix)
-
-    # Iterate until all rows are assigned (or max possible assignments made)
-    while (ass < 0).sum() > max(0, rows - cols):
-        # Get indices of unassigned rows
-        unassigned = (ass == -1).nonzero(as_tuple=True)[0]
-
-        # Calculate value matrix for unassigned rows
-        value = profit_matrix[unassigned] - cost
-
-        # Get top 2 values and their indices for each unassigned row
-        # (Ensure we don't pick up dummy infs by clamping)
-        top_value, top_idx = torch.where(torch.isfinite(value), value, -1e9).topk(
-            2, dim=1
-        )
-
-        # Calculate bid increments for the highest values
-        first_idx = top_idx[:, 0]
-        first_value, second_value = top_value[:, 0], top_value[:, 1]
-        bid_increments = first_value - second_value + eps
-
-        # Reset bids for unassigned rows and update with new bids
-        bids.index_fill_(0, unassigned, 0)
-        bids[unassigned] = bids[unassigned].scatter_(
-            dim=1, index=first_idx.view(-1, 1), src=bid_increments.view(-1, 1)
-        )
-
-        # Get columns with bidders (Fixes random squeeze crashes)
-        have_bidder = (bids > 0).any(dim=0).nonzero(as_tuple=True)[0]
-
-        if have_bidder.numel() == 0:
-            break  # Convergence failsafe
-
-        # Get maximum bids and their row indices
-        high_bids, high_bidders = bids[:, have_bidder].max(dim=0)
-
-        # Update cost matrix with the high bids
-        cost[:, have_bidder] += high_bids
-
-        # Unassign rows previously assigned to the current winning columns
-        ass_prev = (
-            (ass.view(-1, 1) == have_bidder.view(1, -1))
-            .any(dim=1)
-            .nonzero(as_tuple=True)[0]
-        )
-        ass[ass_prev] = -1
-
-        # Assign high bidders to the winning columns
-        ass[high_bidders] = have_bidder
-
-    # 3. Filter Matches and Enforce Valid Mask
-    idx = torch.arange(rows, device=device)
-    valid_assignments = ass >= 0
-
-    matched_rows_temp = idx[valid_assignments]
-    matched_cols_temp = ass[valid_assignments]
-
-    # Only keep matches that were mathematically valid (not masked out by inf)
-    actually_valid = valid_mask[matched_rows_temp, matched_cols_temp]
-
-    final_matched_rows = matched_rows_temp[actually_valid]
-    final_matched_cols = matched_cols_temp[actually_valid]
-
-    if final_matched_rows.numel() > 0:
-        matches = torch.stack([final_matched_rows, final_matched_cols], dim=1)
-    else:
-        matches = torch.empty((0, 2), dtype=torch.long, device=device)
-
-    # Calculate unmatched rows and cols safely
-    unmatched_rows = idx[~torch.isin(idx, final_matched_rows)]
-    all_cols = torch.arange(cols, device=device)
-    unmatched_cols = all_cols[~torch.isin(all_cols, final_matched_cols)]
-
-    return matches, unmatched_rows, unmatched_cols
-
-
-torch.fx.wrap("auction_assignment_legacy")
 
 torch.fx.wrap("auction_assignment")

@@ -6,7 +6,7 @@ build-backend = "uv_build"
 name = "unitrack"
 description = "PyTorch library for multi-object tracking (MOT) and data association."
 readme = "README.md"
-version = "1.0.2"
+version = "2.0.0"
 requires-python = ">=3.13, <3.14"
 keywords = [
   "computer vision",
@@ -38,13 +38,29 @@ dependencies = [
   "scipy>=1.10.0",
   "numpy>=2.0.0",
   "tensordict>=0.11.0",
+  "torchmatch>=1.0.1",
+]
+
+[project.optional-dependencies]
+bench = []
+hpo = ["optuna"]
+# The benchmark harness also needs the `evaluators` package for the HOTA
+# metric. It is not distributed as part of this project, so it is NOT declared
+# here (a path source would break CI); install it on demand, e.g.
+# `uv pip install -e /path/to/evaluators`. The harness imports it lazily and
+# the tests `importorskip` it, so the package degrades gracefully when absent.
+benchmark = [
+  "transformers>=4.46.0",
+  "huggingface-hub>=0.25.0",
+  "pillow>=10.0.0",
+  "lmdb>=1.4.0",
 ]
 
 [dependency-groups]
 dev = [
   "hypothesis>=6.140.2",
   "nbstripout>=0.9.0",
-  "pre-commit>=4.5.1",
+  "prek",
   "pytest>=8.4.2",
   "pytest-benchmark>=5.1.0",
   "pytest-cov>=7.0.0",
@@ -57,8 +73,16 @@ dev = [
   "ty>=0.0.17",
   "pytest-timeout>=2.4.0",
 ]
-docs = ["numpydoc>=1.9.0", "sphinx>=8.2.3", "sphinx-rtd-theme>=3.0.2"]
-notebooks = ["ipykernel>=6.30.1", "ipywidgets>=8.1.7", "jupyterlab>=4.4.9"]
+notebooks = [
+  "ipykernel>=6.30.1",
+  "ipywidgets>=8.1.7",
+  "jupyterlab>=4.4.9",
+  "matplotlib>=3.8",
+]
+# Dependencies for the runnable examples under examples/. Mirrors the published
+# `hpo` extra so the synthetic HPO sweep runs in the devshell; PyPI consumers
+# instead use `pip install 'unitrack[hpo]'`.
+examples = ["optuna"]
 
 [tool.ruff]
 target-version = 'py313'
@@ -104,11 +128,47 @@ ignore = [
 ]
 
 [tool.ruff.lint.per-file-ignores]
-"tests/*" = ["D", "T"]
+"tests/*" = ["D", "T", "PLC0415", "PLR1714"]
+"sources/unitrack/__init__.py" = ["PLC0415"]
+"sources/unitrack/assignment/_hungarian.py" = ["PLC0415"]
+# The benchmark harness imports its optional `benchmark`-extra deps
+# (lmdb/PIL/transformers/evaluators) lazily so the package degrades gracefully
+# when the extra is absent.
+"sources/unitrack/benchmarks/hota/*.py" = ["PLC0415"]
+"notebooks/tutorials/_build.py" = [
+  "D",
+  "T",
+  "E501",
+  "RUF001",
+  "RUF003",
+  "PLR0915",
+]
+"notebooks/embedding_filters/_build.py" = [
+  "D",
+  "T",
+  "E501",
+  "RUF001",
+  "RUF003",
+  "PLR0915",
+]
 
 [tool.ruff.format]
 docstring-code-format = true
 docstring-code-line-length = "dynamic"
+
+[tool.uv]
+# The Nix devshell (and a bare `uv sync`) provisions these groups by default so
+# the environment can run the full developer surface out of the box: the test
+# suite (dev), the tutorial notebooks (notebooks), and the HPO example
+# (examples -> optuna). The documentation site is built by docyard (see
+# flake.nix), not from a uv dependency group. The real-data HPO path
+# additionally needs `transformers` and `pillow`; install those on demand
+# (see examples/hpo_sweep/README.md) to avoid pulling heavy weights by default.
+default-groups = ["dev", "notebooks", "examples"]
+# torchmatch uses torch at build time; disable isolation so it sees
+# the venv's pinned torch rather than pulling a fresh copy from PyPI.
+no-build-isolation-package = ["torchmatch"]
+
 
 [tool.uv.build-backend]
 module-root = "sources"

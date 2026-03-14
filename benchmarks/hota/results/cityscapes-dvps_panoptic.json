@@ -1,0 +1,87 @@
+{
+  "metadata": {
+    "dataset": "cityscapes-dvps",
+    "device": "cpu",
+    "models": {
+      "mask2former-tiny": "facebook/mask2former-swin-tiny-cityscapes-panoptic",
+      "mask2former-small": "facebook/mask2former-swin-small-cityscapes-panoptic",
+      "mask2former-base": "facebook/mask2former-swin-base-IN21k-cityscapes-panoptic",
+      "mask2former-large": "facebook/mask2former-swin-large-cityscapes-panoptic"
+    },
+    "limit_seqs": 5,
+    "max_frames": null,
+    "mask_iou_threshold": 0.5,
+    "min_score": 0.1,
+    "offset": 1000,
+    "thing_ids": [
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18
+    ],
+    "unitrack_version": "2.0.0",
+    "transformers_version": "5.9.0"
+  },
+  "results": [
+    {
+      "model_key": "mask2former-tiny",
+      "metrics": {
+        "HOTA": 0.3385530599552757,
+        "DetA": 0.3027096525410591,
+        "AssA": 0.4321582269455336,
+        "LocA": 0.7752932068001709,
+        "MOTA": -0.12103174603174603,
+        "IDF1": 0.25555555555555554
+      },
+      "num_sequences": 5,
+      "num_frames": 30,
+      "seconds": 185.88461099099368
+    },
+    {
+      "model_key": "mask2former-small",
+      "metrics": {
+        "HOTA": 0.34964487376646275,
+        "DetA": 0.3146670369987379,
+        "AssA": 0.4486876962409879,
+        "LocA": 0.7743936879641637,
+        "MOTA": -0.08134920634920635,
+        "IDF1": 0.27201783723522854
+      },
+      "num_sequences": 5,
+      "num_frames": 30,
+      "seconds": 197.4861134250241
+    },
+    {
+      "model_key": "mask2former-base",
+      "metrics": {
+        "HOTA": 0.35277332973621345,
+        "DetA": 0.3141804730373339,
+        "AssA": 0.44756362583520576,
+        "LocA": 0.7793249919479442,
+        "MOTA": -0.07142857142857142,
+        "IDF1": 0.27808676307007785
+      },
+      "num_sequences": 5,
+      "num_frames": 30,
+      "seconds": 342.68344439400244
+    },
+    {
+      "model_key": "mask2former-large",
+      "metrics": {
+        "HOTA": 0.3512953043083385,
+        "DetA": 0.3211470244811173,
+        "AssA": 0.4362711903747066,
+        "LocA": 0.7842956629942267,
+        "MOTA": -0.07738095238095238,
+        "IDF1": 0.28004410143329656
+      },
+      "num_sequences": 5,
+      "num_frames": 30,
+      "seconds": 156.72602283599554
+    }
+  ]
+}

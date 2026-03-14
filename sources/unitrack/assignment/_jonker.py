@@ -1,82 +1,60 @@
-"""Implementation of the Jonker-Volgenant algorithm for linear assignment problems."""
+"""Jonker-Volgenant LAP solver wrapping the rectangular LAPJV backend."""
 
 import typing
 
-import numpy as np
 import torch
 import torch.fx
 
 from ._base import Assignment
-
-try:
-    from lap import lapjv
-
-    lapjv_error = ""
-except ImportError:
-    lapjv_error = (
-        "Algorithm `lapjv` is not available. "
-        "Please install the 'lap' package to use the Jonker-Volgenant algorithm."
-    )
-
-    def lapjv(
-        cost_matrix: np.ndarray,  # noqa: ARG001
-        extend_cost: bool = False,  # noqa: ARG001
-        cost_limit: float = np.inf,  # noqa: ARG001
-    ) -> tuple[float, np.ndarray, np.ndarray]:
-        raise ImportError(lapjv_error)
-
+from .lapjv._solver import lapjvx_assignment
 
 __all__ = ["Jonker", "jonker_volgenant_assignment"]
 
 
 class Jonker(Assignment):
-    """Uses the Jonker-Volgenant algorithm to solve the linear assignment problem."""
+    """
+    Jonker-Volgenant LAP solver backed by the rectangular LAPJV CPU backend.
 
-    def __new__(cls, *_, **__) -> typing.Self:
-        if lapjv_error:
-            raise ImportError(lapjv_error)
-        return super().__new__(cls)
+    Dispatches to :func:`.lapjvx_assignment`; see that function for the
+    full shape and dtype contract.
+    """
 
     @typing.override
     def _assign(
         self, cost_matrix: torch.Tensor
     ) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
-        return jonker_volgenant_assignment(cost_matrix, self.threshold)
+        return lapjvx_assignment(cost_matrix)
 
 
 def jonker_volgenant_assignment(
     cost_matrix: torch.Tensor, threshold: float
 ) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
     """
-    Perform linear assignment using the Jonker-Volgenant algorithm.
+    Solve a LAP via the Jonker-Volgenant algorithm with a cost threshold.
 
-    If possible, an assignment on the diagonal of the matrix is preferred if this
-    assignment has equal cost to the algorithm result.
+    Masks entries strictly above ``threshold`` to ``inf`` and dispatches
+    to :func:`.lapjvx_assignment`.
+
+    Parameters
+    ----------
+    cost_matrix : torch.Tensor
+        ``(N, M)`` cost matrix.
+    threshold : float
+        Cost upper bound. Entries above ``threshold`` are treated as
+        forbidden pairs.
+
+    Returns
+    -------
+    matches : torch.Tensor
+        ``(K, 2)`` long tensor of matched ``(row, col)`` indices.
+    unmatched_rows : torch.Tensor
+        ``(N - K,)`` long tensor of unmatched row indices.
+    unmatched_cols : torch.Tensor
+        ``(M - K,)`` long tensor of unmatched column indices.
+
     """
-    device = cost_matrix.device
-    cost_matrix = cost_matrix.detach().cpu().contiguous()
-    cost_matrix = np.ascontiguousarray(cost_matrix).astype(np.float64)
-    cost_matrix = np.where(np.isfinite(cost_matrix), cost_matrix, np.inf)
-    matches = []
-
-    # Jonker algorithm, i.e. linear sum assignment (rows) -> (cols)
-    _cost, x, y = lapjv(cost_matrix, extend_cost=True, cost_limit=threshold)
-
-    # Create match and unassigned lists
-    for ix in range(x.shape[0]):
-        mx = x[ix]
-        if mx < 0:
-            continue
-        c = cost_matrix[ix, mx]
-        if not np.isfinite(c):
-            continue
-        matches.append([ix, mx])
-
-    unmatched_a = torch.from_numpy(np.where(x < 0)[0]).clone().long()
-    unmatched_b = torch.from_numpy(np.where(y < 0)[0]).clone().long()
-    matches = torch.from_numpy(np.asarray(matches)).clone().long()
-
-    return matches.to(device), unmatched_a.to(device), unmatched_b.to(device)
+    cost_matrix = torch.where(cost_matrix <= threshold, cost_matrix, torch.inf)
+    return lapjvx_assignment(cost_matrix)
 
 
 torch.fx.wrap("jonker_volgenant_assignment")

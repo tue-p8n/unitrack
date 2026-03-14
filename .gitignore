@@ -2,6 +2,16 @@
 .vscode
 .fleet
 
+# Git worktrees
+.worktrees/
+
+# Local AI-assistant session state (per-developer, not shared)
+.claude/
+CLAUDE.md
+
+# Local agent-skill state (never commit)
+**/superpowers/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -16,6 +26,9 @@ build/
 develop-eggs/
 dist/
 downloads/
+
+# docyard (docs site build output)
+dist-docs/
 eggs/
 .eggs/
 lib/
@@ -80,6 +93,7 @@ target/
 
 # Jupyter Notebook
 .ipynb_checkpoints
+.ipynb.md 
 
 # IPython
 profile_default/
@@ -131,3 +145,7 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+.direnv
+
+# learned-filter embedding extraction cache (regenerable; not committed)
+sources/unitrack/benchmarks/hota/weights/_extract_*.pt

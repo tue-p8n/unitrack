@@ -1,0 +1,27 @@
+{
+  "include": [
+    "sources",
+    "tests",
+    "examples",
+    "notebooks/tutorials/_build.py"
+  ],
+  "exclude": [
+    ".venv",
+    ".uv_cache",
+    "**/__pycache__"
+  ],
+  "pythonVersion": "3.13",
+  "typeCheckingMode": "basic",
+  "//": "tensordict tensorclass / TensorDict.__getattr__ pattern fools Pyright;",
+  "//2": "downgrade the noisy reports to information so real errors still show.",
+  "reportCallIssue": "information",
+  "reportArgumentType": "information",
+  "reportAttributeAccessIssue": "information",
+  "reportAssignmentType": "information",
+  "reportReturnType": "information",
+  "reportMissingImports": "information",
+  "reportUnknownParameterType": "none",
+  "reportUnknownMemberType": "none",
+  "reportUnknownVariableType": "none",
+  "reportGeneralTypeIssues": "warning"
+}
