@@ -22,13 +22,10 @@ jobs:
         run: uv sync
 
       - name: Run test suite
-        # These runners have no GPU; hiding CUDA devices avoids driver-probe
-        # hangs that pytest-timeout's signal-based mechanism can't interrupt
-        # (it only breaks at Python bytecode boundaries, not inside a
-        # blocking C-level ioctl).
+        # -v: diagnostic, pins down which test a mid-suite hang stalls on.
         env:
           CUDA_VISIBLE_DEVICES: ""
-        run: uv run pytest -n auto --dist=loadfile --benchmark-disable
+        run: uv run pytest -n auto --dist=loadfile --benchmark-disable -v
 
   build:
     needs: test
