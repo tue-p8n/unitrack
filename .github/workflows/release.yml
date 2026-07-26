@@ -25,14 +25,15 @@ jobs:
         timeout-minutes: 5
         run: |
           pip install --quiet py-spy
+          PYSPY=$(command -v py-spy)
           uv run pytest -n auto --dist=loadfile --benchmark-disable &
           PYTEST_PID=$!
-          sleep 40
-          echo "=== process tree ==="
-          ps -ef --forest
-          for pid in $(pgrep -f "python|pytest"); do
-            echo "=== py-spy dump PID $pid ==="
-            sudo py-spy dump --pid "$pid" || true
+          sleep 60
+          echo "=== high-CPU worker PIDs ==="
+          ps -eo pid,pcpu,cmd --sort=-pcpu | head -10
+          for pid in $(pgrep -f "exec\(eval\(sys.stdin.readline"); do
+            echo "=== py-spy dump PID $pid (native + python stacks) ==="
+            sudo "$PYSPY" dump --pid "$pid" --native --locals || true
           done
           kill -9 "$PYTEST_PID" 2>/dev/null || true
           pkill -9 -f pytest 2>/dev/null || true
