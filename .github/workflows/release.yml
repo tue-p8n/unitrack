@@ -9,6 +9,13 @@ jobs:
   test:
     runs-on: ubuntu-24.04
     timeout-minutes: 20
+    env:
+      # These runners have no GPU. Plain `uv sync` still resolves the
+      # CUDA build of torch (the Linux/x86_64 PyPI default) and pulls
+      # the full nvidia-* runtime stack; some of its init paths probe
+      # for hardware that isn't there and hang in ways pytest-timeout's
+      # signal-based mechanism can't interrupt. Force the CPU backend.
+      UV_TORCH_BACKEND: cpu
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -22,10 +29,7 @@ jobs:
         run: uv sync
 
       - name: Run test suite
-        # -v: diagnostic, pins down which test a mid-suite hang stalls on.
-        env:
-          CUDA_VISIBLE_DEVICES: ""
-        run: uv run pytest -n auto --dist=loadfile --benchmark-disable -v
+        run: uv run pytest -n auto --dist=loadfile --benchmark-disable
 
   build:
     needs: test
