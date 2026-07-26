@@ -61,7 +61,7 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     environment:
-      name: pypi
+      name: release
       url: https://pypi.org/project/unitrack/${{ github.ref_name }}/
     permissions:
       id-token: write
