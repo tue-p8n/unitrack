@@ -1,11 +1,11 @@
 """
 Build the embedding-filter demonstration notebooks.
 
-Five notebooks, one per recursive estimator for appearance/kernel
+Six notebooks, one per recursive estimator for appearance/kernel
 embeddings, each driving a *real* ``unitrack.Tracker`` so the demo doubles
 as proof the library supports the method. Edit the ``NB_*`` lists and re-run:
 
-    python notebooks/embedding_filters/_build.py
+    python docs/5.notebooks/embedding_filters/_build.py
 """
 
 from __future__ import annotations
@@ -59,7 +59,7 @@ def write_notebook(path: pathlib.Path, cells: list[tuple[str, str]]) -> None:
         "nbformat_minor": 5,
     }
     path.write_text(json.dumps(nb, indent=1))
-    print(f"  wrote {path.relative_to(HERE.parent.parent)}")
+    print(f"  wrote {path.relative_to(HERE.parent.parent.parent)}")
 
 
 # Shared preamble: imports + a drifting-embedding clip + a tracker runner.
@@ -1092,12 +1092,12 @@ NB_SUMMARY = [
 
 
 NOTEBOOKS = {
-    "01_ema.ipynb": NB_EMA,
-    "02_kalman_diagonal.ipynb": NB_KALMAN,
-    "03_vmf_directional.ipynb": NB_VMF,
-    "04_enkf_information.ipynb": NB_ENKF,
-    "05_gallery_and_learned.ipynb": NB_GALLERY,
-    "06_summary_benchmark.ipynb": NB_SUMMARY,
+    "1.ema.ipynb": NB_EMA,
+    "2.kalman_diagonal.ipynb": NB_KALMAN,
+    "3.vmf_directional.ipynb": NB_VMF,
+    "4.enkf_information.ipynb": NB_ENKF,
+    "5.gallery_and_learned.ipynb": NB_GALLERY,
+    "6.summary_benchmark.ipynb": NB_SUMMARY,
 }
 
 

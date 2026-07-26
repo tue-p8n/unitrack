@@ -136,7 +136,7 @@ ignore = [
 # (lmdb/PIL/transformers/evaluators) lazily so the package degrades gracefully
 # when the extra is absent.
 "sources/unitrack/benchmarks/hota/*.py" = ["PLC0415"]
-"notebooks/tutorials/_build.py" = [
+"docs/5.notebooks/tutorials/_build.py" = [
   "D",
   "T",
   "E501",
@@ -144,7 +144,7 @@ ignore = [
   "RUF003",
   "PLR0915",
 ]
-"notebooks/embedding_filters/_build.py" = [
+"docs/5.notebooks/embedding_filters/_build.py" = [
   "D",
   "T",
   "E501",
@@ -180,7 +180,7 @@ namespace = true
 root = ["./sources"]
 
 [tool.ty.src]
-include = ["sources", "tests", "notebooks", "scripts"]
+include = ["sources", "tests", "docs/5.notebooks", "scripts"]
 
 [tool.pytest.ini_options]
 timeout = 10

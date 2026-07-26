@@ -3,7 +3,7 @@
     "sources",
     "tests",
     "examples",
-    "notebooks/tutorials/_build.py"
+    "docs/5.notebooks/tutorials/_build.py"
   ],
   "exclude": [
     ".venv",

@@ -6,7 +6,7 @@ where cell_type is "md" or "py". This script writes valid .ipynb JSON
 files into the same directory.
 
 Run with:
-    python notebooks/tutorials/_build.py
+    python docs/5.notebooks/tutorials/_build.py
 """
 
 from __future__ import annotations
@@ -57,7 +57,7 @@ def write_notebook(path: pathlib.Path, cells: list[tuple[str, str]]) -> None:
         "nbformat_minor": 5,
     }
     path.write_text(json.dumps(nb, indent=1))
-    print(f"  wrote {path.relative_to(HERE.parent.parent)}")
+    print(f"  wrote {path.relative_to(HERE.parent.parent.parent)}")
 
 
 # ---------------------------------------------------------------------------
@@ -2020,7 +2020,7 @@ NB_07_MIGRATION: list[tuple[str, str]] = [
 
         1. **Migrates a real 1.x tracker to 2.0.** We take the
            appearance-embedding tracker from the
-           [migration guide](../../docs/migration.md) and rebuild it in
+           [migration guide](/migration) and rebuild it in
            the 2.0 syntax, then run it on detections from an actual
            pretrained model.
         2. **Showcases what 2.0 makes possible** that 1.x could not
@@ -2274,7 +2274,7 @@ NB_07_MIGRATION: list[tuple[str, str]] = [
         ## The 1.x tracker we're migrating
 
         In unitrack 1.x the appearance tracker was built like this (see the
-        [migration guide](../../docs/migration.md) for the full before /
+        [migration guide](/migration) for the full before /
         after and the symbol-by-symbol mapping):
 
         ```python
@@ -2584,7 +2584,7 @@ NB_07_MIGRATION: list[tuple[str, str]] = [
 
         ## Where to go next
 
-        - **[Migration guide](../../docs/migration.md)** — the full
+        - **[Migration guide](/migration)** — the full
           1.x → 2.0 symbol map and a line-by-line port of this tracker.
         - **Notebooks 1–6** — the library from the ground up: data model,
           cost & gate zoos, the pipeline tree, states & lifecycle.
@@ -2602,13 +2602,13 @@ NB_07_MIGRATION: list[tuple[str, str]] = [
 # ---------------------------------------------------------------------------
 
 NOTEBOOKS = {
-    "01_quickstart.ipynb": NB_01_QUICKSTART,
-    "02_data_model.ipynb": NB_02_DATA_MODEL,
-    "03_costs_and_gates.ipynb": NB_03_COSTS_GATES,
-    "04_pipeline_tree.ipynb": NB_04_PIPELINE,
-    "05_states_and_lifecycle.ipynb": NB_05_STATES_LIFECYCLE,
-    "06_cascaded_and_parallel.ipynb": NB_06_CASCADED,
-    "07_migration.ipynb": NB_07_MIGRATION,
+    "1.quickstart.ipynb": NB_01_QUICKSTART,
+    "2.data_model.ipynb": NB_02_DATA_MODEL,
+    "3.costs_and_gates.ipynb": NB_03_COSTS_GATES,
+    "4.pipeline_tree.ipynb": NB_04_PIPELINE,
+    "5.states_and_lifecycle.ipynb": NB_05_STATES_LIFECYCLE,
+    "6.cascaded_and_parallel.ipynb": NB_06_CASCADED,
+    "7.migration.ipynb": NB_07_MIGRATION,
 }
 
 

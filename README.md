@@ -94,9 +94,9 @@ for frame in range(3):
 
 ## Recipes and tutorials
 
-Ready-to-run tracker recipes in [`docs/recipes/`](docs/recipes/) include a SORT
+Ready-to-run tracker recipes in [`docs/2.recipes/`](docs/2.recipes/) include a SORT
 port (IoU + Kalman bounding-box state) and a class-and-score-gated overlap
-tracker. The six-notebook tour under
-[`notebooks/tutorials/`](notebooks/tutorials/) covers the data model,
+tracker. The seven-notebook tour under
+[`docs/5.notebooks/tutorials/`](docs/5.notebooks/tutorials/) covers the data model,
 cost and gate zoos, pipeline tree, state and lifecycle, and cascaded
 versus parallel fusion on synthetic data with known ground truth.
