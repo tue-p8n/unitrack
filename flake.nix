@@ -13,7 +13,7 @@
 
     # Documentation framework
     docyard = {
-      url = "github:khwstolle/docyard";
+      url = "github:mapnomad/docyard";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
