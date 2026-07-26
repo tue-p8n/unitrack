@@ -115,7 +115,7 @@
               managed = true;
               title = "Unitrack";
               description = "Unified multi-object tracking.";
-              repo = "https://github.com/khwstolle/unitrack";
+              repo = "https://github.com/tue-p8n/unitrack";
               content = "docs";
               # Keep the build output OUT of `content`, otherwise the content
               # collection globs it back in as pages. Also kept out of `dist`,
