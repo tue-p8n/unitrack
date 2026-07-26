@@ -54,6 +54,7 @@ benchmark = [
   "huggingface-hub>=0.25.0",
   "pillow>=10.0.0",
   "lmdb>=1.4.0",
+  "safetensors>=0.4.0",
 ]
 
 [dependency-groups]

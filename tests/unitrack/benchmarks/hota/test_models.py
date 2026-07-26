@@ -42,6 +42,7 @@ def test_adapter_call_extracts_embeddings_and_centroids():
     """The adapter's __call__ pipes processor -> model -> extract_segments ->
     thing instances carrying per-instance embeddings + centroids, without any
     network (processor/model are mocked)."""
+    pytest.importorskip("transformers")
     from unittest.mock import MagicMock
 
     dim = 256
@@ -85,6 +86,7 @@ def test_adapter_call_extracts_embeddings_and_centroids():
 def test_extract_segments_with_queries_records_source_queries():
     """The reimplemented extraction returns segmentation/segments and records each
     segment's source query index."""
+    pytest.importorskip("transformers")
     from unitrack.benchmarks.hota.models import extract_segments_with_queries
 
     dim = 8

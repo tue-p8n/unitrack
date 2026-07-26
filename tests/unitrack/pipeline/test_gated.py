@@ -161,14 +161,20 @@ def test_gated_pair_and_bias_attaches_mask_and_bias_together():
     """`Gate.combine(PerPair, CostBias)` produces a `_PairAndBias`; the
     Gated dispatch must apply BOTH the (N,M) mask AND the (N,M) bias to
     the inner cost expression."""
+    # A bare 2x2 shape can't isolate mask from bias here: with only two
+    # detections, forbidding (0, 0) leaves {(0, 1), (1, 0)} as the sole
+    # perfect matching, so (1, 1) can never be selected regardless of how
+    # negative its bias is. A third detection ([1, 1], cost 0 to either cs
+    # row) gives row 0 somewhere to go besides (0, 0), so the bias on
+    # (1, 1) can actually decide the outcome.
     cs_k = torch.tensor([[1.0, 1.0], [1.0, 1.0]])
-    ds_k = torch.tensor([[0.0, 1.0], [1.0, 0.0]])
+    ds_k = torch.tensor([[0.0, 1.0], [1.0, 0.0], [1.0, 1.0]])
     cs, ds, ctx = _make(
         cs_k,
         ds_k,
         cs_class=torch.zeros(2, dtype=torch.int64),
-        ds_class=torch.zeros(2, dtype=torch.int64),
-        ds_score=torch.ones(2),
+        ds_class=torch.zeros(3, dtype=torch.int64),
+        ds_score=torch.ones(3),
     )
     inner = Pipe(cost=Cosine("kernel"), assoc=Associate(Jonker(threshold=5.0)))
     pipe = Gated(gate=_PairAndBiasCombined(), then=inner)

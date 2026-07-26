@@ -360,6 +360,7 @@ def test_learned_tracker_builds_and_tracks_from_checkpoint(tmp_path):
     # With a (synthetic) checkpoint present, the factory loads the modules and
     # runs end-to-end. A near-identity propagator keeps one stable id, exercising
     # the LearnedProcess/LearnedObservation wiring.
+    pytest.importorskip("safetensors")
     from unitrack.benchmarks.hota.learned_modules import Fuser, Propagator
     from unitrack.benchmarks.hota.train_learned import save_checkpoint
 
