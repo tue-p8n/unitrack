@@ -8,6 +8,7 @@ on:
 jobs:
   test:
     runs-on: ubuntu-24.04
+    timeout-minutes: 20
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -21,11 +22,18 @@ jobs:
         run: uv sync
 
       - name: Run test suite
+        # These runners have no GPU; hiding CUDA devices avoids driver-probe
+        # hangs that pytest-timeout's signal-based mechanism can't interrupt
+        # (it only breaks at Python bytecode boundaries, not inside a
+        # blocking C-level ioctl).
+        env:
+          CUDA_VISIBLE_DEVICES: ""
         run: uv run pytest -n auto --dist=loadfile --benchmark-disable
 
   build:
     needs: test
     runs-on: ubuntu-24.04
+    timeout-minutes: 10
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -47,6 +55,7 @@ jobs:
   publish-pypi:
     needs: build
     runs-on: ubuntu-24.04
+    timeout-minutes: 10
     environment:
       name: pypi
       url: https://pypi.org/project/unitrack/${{ github.ref_name }}/
@@ -65,6 +74,7 @@ jobs:
   publish-github-release:
     needs: build
     runs-on: ubuntu-24.04
+    timeout-minutes: 10
     permissions:
       contents: write
     steps:
