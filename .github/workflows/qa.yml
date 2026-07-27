@@ -81,6 +81,4 @@ jobs:
       # devShells, which pull in the private `tue-p8n/nix` input and need
       # broader repo access than this workflow's token grants.
       - name: Build treefmt and pre-commit checks
-        run: >
-          nix build -L .#checks.x86_64-linux.treefmt .#checks.x86_64-linux.pre-commit
-
+        run: nix build -L .#checks.x86_64-linux.treefmt .#checks.x86_64-linux.pre-commit
