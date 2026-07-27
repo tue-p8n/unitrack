@@ -55,7 +55,7 @@ class Auction(Assignment):
 
 
 @torch.no_grad()
-def auction_assignment(  # noqa: PLR0915
+def auction_assignment(
     cost_matrix: torch.Tensor, bid_size: float
 ) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
     """

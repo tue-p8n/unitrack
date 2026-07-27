@@ -1,8 +1,15 @@
-name: Release
+name: QA
 on:
   push:
-    tags:
-      - "[0-9]+.[0-9]+.[0-9]+"
+    branches: [main]
+  pull_request:
+# Per-ref group: a new push to the same branch/PR cancels the previous
+# in-flight run; runs on different refs proceed in parallel.
+concurrency:
+  group: qa-${{ github.ref }}
+  cancel-in-progress: true
+permissions:
+  contents: read
 jobs:
   test:
     runs-on: ubuntu-24.04
@@ -27,8 +34,7 @@ jobs:
         run: >
           uv run pytest -n auto --dist=loadfile --benchmark-disable --ignore=tests/unitrack/assignment/test_assignment_benchmark.py --ignore=tests/unitrack/assignment/test_assignment_batched_benchmark.py
 
-  build:
-    needs: test
+  lint:
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
@@ -38,44 +44,38 @@ jobs:
         uses: astral-sh/setup-uv@v5
         with:
           python-version: "3.13"
-      - name: Build sdist and wheel
-        run: uv build
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: dist
-          path: dist/
-  publish-pypi:
-    needs: build
+      - name: Install lint tooling
+        run: uv sync --only-group dev
+      - name: Ruff check
+        run: uv run ruff check .
+  typecheck:
     runs-on: ubuntu-24.04
     timeout-minutes: 10
-    environment:
-      name: release
-      url: https://pypi.org/project/unitrack/${{ github.ref_name }}/
-    permissions:
-      id-token: write
     steps:
-      - name: Download build artifacts
-        uses: actions/download-artifact@v4
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
         with:
-          name: dist
-          path: dist/
-      - name: Publish to PyPI
-        uses: pypa/gh-action-pypi-publish@release/v1
-  publish-github-release:
-    needs: build
+          python-version: "3.13"
+      - name: Install dependencies
+        run: uv sync
+      - name: Pyright
+        run: uv run pyright
+  format:
     runs-on: ubuntu-24.04
     timeout-minutes: 10
-    permissions:
-      contents: write
     steps:
-      - name: Download build artifacts
-        uses: actions/download-artifact@v4
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@v17
         with:
-          name: dist
-          path: dist/
-      - name: Create GitHub release
-        uses: softprops/action-gh-release@v2
-        with:
-          files: dist/*
-          generate_release_notes: true
+          extra-conf: |
+            access-tokens = github.com=${{ secrets.DOCYARD_PAT }}
+      # Runs both the treefmt (ruff/clang-format/alejandra/yamlfmt/taplo/...)
+      # and pre-commit-hooks checks defined in flake.nix, so formatting is
+      # enforced through the same treefmt-nix setup used across projects
+      # rather than a separately maintained CI-only invocation.
+      - name: nix flake check
+        run: nix flake check -L

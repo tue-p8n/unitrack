@@ -93,7 +93,7 @@ target/
 
 # Jupyter Notebook
 .ipynb_checkpoints
-.ipynb.md 
+.ipynb.md
 
 # IPython
 profile_default/

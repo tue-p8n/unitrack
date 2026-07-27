@@ -28,7 +28,8 @@ def test_propagator_gradient_flows():
     loss.backward()
     grads = [p.grad for p in prop.parameters()]
     assert all(g is not None for g in grads)
-    assert any(g.abs().sum() > 0 for g in grads)
+    non_none_grads = [g for g in grads if g is not None]
+    assert any(g.abs().sum() > 0 for g in non_none_grads)
 
 
 def test_fuser_output_shape_and_unit_norm():
@@ -51,4 +52,5 @@ def test_fuser_gradient_flows():
     loss.backward()
     grads = [p.grad for p in fuse.parameters()]
     assert all(g is not None for g in grads)
-    assert any(g.abs().sum() > 0 for g in grads)
+    non_none_grads = [g for g in grads if g is not None]
+    assert any(g.abs().sum() > 0 for g in non_none_grads)

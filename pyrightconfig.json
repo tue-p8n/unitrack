@@ -3,7 +3,8 @@
     "sources",
     "tests",
     "examples",
-    "docs/5.notebooks/tutorials/_build.py"
+    "docs/5.notebooks/tutorials/_build.py",
+    "docs/5.notebooks/embedding_filters/_build.py"
   ],
   "exclude": [
     ".venv",

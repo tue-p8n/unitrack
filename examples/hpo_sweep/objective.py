@@ -269,7 +269,7 @@ def real_data_objective(
     appearance across frames. This is a *proxy* for HOTA/VPQ; for a real
     eval, replace with a benchmark-specific metric.
     """
-    from PIL import Image  # noqa: PLC0415 — optional dep for real-data path
+    from PIL import Image
 
     tracker = sample_tracker(trial, schema=schema)
     stream = MultiStream(tracker)

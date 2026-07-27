@@ -168,6 +168,8 @@ def test_live_embedding_extraction_parity():
 
     m = build_model("mask2former-tiny", thing_ids=ds.thing_ids)
     m.load(torch.device("cpu"))
+    assert m._processor is not None
+    assert m._model is not None
 
     pil = Image.fromarray(image)
     inputs = m._processor(images=pil, return_tensors="pt").to(m._device)

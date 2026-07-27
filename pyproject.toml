@@ -32,6 +32,7 @@ classifiers = [
   "Programming Language :: Python :: 3.13",
   "Operating System :: OS Independent",
 ]
+
 dependencies = [
   "torch>=2.7",
   "torchvision",
@@ -57,6 +58,12 @@ benchmark = [
   "safetensors>=0.4.0",
 ]
 
+[project.urls]
+Repository = "https://github.com/tue-p8n/unitrack"
+Documentation = "https://unitrack.khws.io"
+Issues = "https://github.com/tue-p8n/unitrack/issues"
+Changelog = "https://github.com/tue-p8n/unitrack/blob/main/CHANGELOG.md"
+
 [dependency-groups]
 dev = [
   "hypothesis>=6.140.2",
@@ -71,7 +78,7 @@ dev = [
   "pytest-xdist>=3.8.0",
   "ruff>=0.9.0",
   "ipdb>=0.13.13",
-  "ty>=0.0.17",
+  "pyright>=1.1.400",
   "pytest-timeout>=2.4.0",
 ]
 notebooks = [
@@ -88,6 +95,11 @@ examples = ["optuna"]
 [tool.ruff]
 target-version = 'py313'
 line-length = 88
+# Tutorial/demo notebooks favour pedagogical clarity and a compact, hand-tuned
+# layout over library-grade rigor; ruff's formatter fights that (expanding
+# calls into one-arg-per-line), so notebooks are skipped by both the linter
+# and the formatter rather than fought with per-file-ignores.
+extend-exclude = ["docs/5.notebooks/**/*.ipynb"]
 
 [tool.ruff.lint]
 select = [
@@ -175,12 +187,6 @@ no-build-isolation-package = ["torchmatch"]
 module-root = "sources"
 module-name = ["unitrack"]
 namespace = true
-
-[tool.ty.environment]
-root = ["./sources"]
-
-[tool.ty.src]
-include = ["sources", "tests", "docs/5.notebooks", "scripts"]
 
 [tool.pytest.ini_options]
 timeout = 10

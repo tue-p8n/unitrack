@@ -136,10 +136,14 @@ def lap_assignment(
         msg = "lap_assignment requires a CUDA device (no CUDA available)"
         raise RuntimeError(msg)
 
-    cost_cuda = cost_matrix.detach().to(
-        device=cost_matrix.device if cost_matrix.is_cuda else "cuda",
-        dtype=torch.float32,
-    ).contiguous()
+    cost_cuda = (
+        cost_matrix.detach()
+        .to(
+            device=cost_matrix.device if cost_matrix.is_cuda else "cuda",
+            dtype=torch.float32,
+        )
+        .contiguous()
+    )
 
     result = tma.solve(cost_cuda, backend=tm_backend, unpack=True)
     matches, unmatched_rows, unmatched_cols = result[0], result[1], result[2]

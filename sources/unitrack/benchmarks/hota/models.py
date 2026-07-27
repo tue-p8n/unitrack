@@ -191,6 +191,10 @@ class HFPanopticAdapter:
         """Run panoptic inference on one RGB frame and return thing instances."""
         from PIL import Image
 
+        if self._processor is None or self._model is None:
+            msg = "call load(device) before running inference"
+            raise RuntimeError(msg)
+
         pil = Image.fromarray(image)
         inputs = self._processor(images=pil, return_tensors="pt").to(self._device)
         outputs = self._model(**inputs)

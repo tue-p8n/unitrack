@@ -78,7 +78,9 @@ class Assignment(torch.nn.Module):
             if sub_m.shape[0] > 0:
                 matched = torch.stack([active[sub_m[:, 0]], sub_m[:, 1]], dim=1)
             else:
-                matched = torch.empty((0, 2), dtype=torch.long, device=cost_matrix.device)
+                matched = torch.empty(
+                    (0, 2), dtype=torch.long, device=cost_matrix.device
+                )
             ur = torch.cat([active[sub_ur], blocked]).sort().values
             return matched, ur, uc
 
