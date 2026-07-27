@@ -73,9 +73,14 @@ jobs:
         with:
           extra-conf: |
             access-tokens = github.com=${{ secrets.DOCYARD_PAT }}
-      # Runs both the treefmt (ruff/clang-format/alejandra/yamlfmt/taplo/...)
+      # Builds the treefmt (ruff/clang-format/alejandra/yamlfmt/taplo/...)
       # and pre-commit-hooks checks defined in flake.nix, so formatting is
       # enforced through the same treefmt-nix setup used across projects
-      # rather than a separately maintained CI-only invocation.
-      - name: nix flake check
-        run: nix flake check -L
+      # rather than a separately maintained CI-only invocation. Deliberately
+      # narrower than `nix flake check`: the full flake check also evaluates
+      # devShells, which pull in the private `tue-p8n/nix` input and need
+      # broader repo access than this workflow's token grants.
+      - name: Build treefmt and pre-commit checks
+        run: >
+          nix build -L .#checks.x86_64-linux.treefmt .#checks.x86_64-linux.pre-commit
+
