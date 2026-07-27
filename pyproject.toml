@@ -6,7 +6,7 @@ build-backend = "uv_build"
 name = "unitrack"
 description = "PyTorch library for multi-object tracking (MOT) and data association."
 readme = "README.md"
-version = "2.0.0"
+version = "2.0.1"
 requires-python = ">=3.13, <3.14"
 keywords = [
   "computer vision",
