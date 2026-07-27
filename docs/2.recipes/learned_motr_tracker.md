@@ -91,7 +91,11 @@ def build_learned_tracker(
     flat = load_file(checkpoint)  # raises if the checkpoint is missing
     prop, fuse = Propagator(embed_dim), Fuser(embed_dim)
     prop.load_state_dict(
-        {k[len("propagator.") :]: v for k, v in flat.items() if k.startswith("propagator.")}
+        {
+            k[len("propagator.") :]: v
+            for k, v in flat.items()
+            if k.startswith("propagator.")
+        }
     )
     fuse.load_state_dict(
         {k[len("fuser.") :]: v for k, v in flat.items() if k.startswith("fuser.")}

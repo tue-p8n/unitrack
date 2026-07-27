@@ -61,7 +61,7 @@ class Mask2FormerDetector:
         target_mask_shape: tuple[int, int] = (96, 192),
     ) -> Mask2FormerDetector:
         """Load model + processor from the HuggingFace Hub."""
-        from transformers import (
+        from transformers import (  # noqa: PLC0415 — optional dep
             Mask2FormerForUniversalSegmentation,
             Mask2FormerImageProcessor,
         )

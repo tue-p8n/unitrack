@@ -68,8 +68,7 @@ from unitrack.pipeline import Pipe
 from unitrack.states import FromDetectionField, Identity, Replace, State
 
 tracker = unitrack.Tracker(
-    root=Pipe(cost=CDist("position"),
-              assoc=Associate(Jonker(threshold=10))),
+    root=Pipe(cost=CDist("position"), assoc=Associate(Jonker(threshold=10))),
     states={
         "position": State(
             schema=TensorSpec(shape=(1,), dtype=torch.float32),
@@ -86,8 +85,9 @@ ms = unitrack.MultiStream(tracker)
 for frame in range(3):
     n = 1 + frame * 2
     pos = (torch.arange(n, dtype=torch.float32) + 1.0).unsqueeze(1)
-    ds = Detections(index=torch.arange(n, dtype=torch.int64),
-                     position=pos, batch_size=[n])
+    ds = Detections(
+        index=torch.arange(n, dtype=torch.int64), position=pos, batch_size=[n]
+    )
     res = ms.step(0, ds, FrameContext.make(frame, fps=15.0, stream_key=0))
     print(f"frame {frame}: ids={res.ids.tolist()}")
 ```

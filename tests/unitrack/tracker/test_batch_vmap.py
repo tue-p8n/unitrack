@@ -122,7 +122,7 @@ def test_predict_and_cost_vmap_matches_loop_path_numerically():
     ctxs = [FrameContext.make(1, stream_key=0), FrameContext.make(1, stream_key=1)]
 
     # vmap path
-    pred_vmap, mat_vmap = bt.predict_and_cost_vmap(dets, ctxs)
+    _pred_vmap, mat_vmap = bt.predict_and_cost_vmap(dets, ctxs)
 
     # Reference loop path: predict + cost-production per slot, no vmap.
     root = bt.tracker.root

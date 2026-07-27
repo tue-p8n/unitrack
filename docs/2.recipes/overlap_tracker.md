@@ -14,6 +14,7 @@ from unitrack.lifecycle import IncludeAll, NoLifecycle
 from unitrack.pipeline import Gated, Pipe, Sequential
 from unitrack.states import FromDetectionField, Identity, Replace, State
 
+
 def build_overlap_tracker(
     *,
     threshold: float = 0.5,

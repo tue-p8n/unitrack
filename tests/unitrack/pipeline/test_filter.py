@@ -1,6 +1,8 @@
 # tests/unitrack/pipeline/test_filter.py
 from __future__ import annotations
 
+import re
+
 import pytest
 import torch
 from unitrack.assignment import Associate, Jonker
@@ -52,13 +54,15 @@ def test_filter_drops_too_old_tracklets_before_pipeline():
 def test_filter_rejects_non_associator_then_at_construction():
     """``Filter.then`` must be an Associator; misuse raises at construction."""
     cost_producer = Cosine("kernel")
-    with pytest.raises(PipelineTypeError, match="Filter.then must be an Associator"):
+    with pytest.raises(
+        PipelineTypeError, match=re.escape("Filter.then must be an Associator")
+    ):
         Filter(MaxAgeFilter(max_age=4), on="cs", then=cost_producer)
 
 
 def test_filter_rejects_unknown_on_axis():
     inner = Pipe(cost=Cosine("kernel"), assoc=Associate(Jonker(threshold=0.5)))
-    with pytest.raises(PipelineTypeError, match="Filter.on"):
+    with pytest.raises(PipelineTypeError, match=re.escape("Filter.on")):
         Filter(MaxAgeFilter(max_age=4), on="oops", then=inner)  # type: ignore[arg-type]
 
 

@@ -39,9 +39,7 @@ from unitrack.states.kalman import KalmanBBox
 def _xyah_to_xyxy(xyah: torch.Tensor) -> torch.Tensor:
     cx, cy, a, h = xyah[..., 0], xyah[..., 1], xyah[..., 2], xyah[..., 3]
     w = a * h
-    return torch.stack(
-        [cx - w / 2, cy - h / 2, cx + w / 2, cy + h / 2], dim=-1
-    )
+    return torch.stack([cx - w / 2, cy - h / 2, cx + w / 2, cy + h / 2], dim=-1)
 
 
 @dataclasses.dataclass(frozen=True, slots=True)

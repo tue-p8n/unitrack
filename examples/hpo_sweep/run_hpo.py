@@ -151,7 +151,7 @@ def main() -> None:
             return synthetic_objective(trial, clip=clip)
 
     else:
-        from .detector import Mask2FormerDetector
+        from .detector import Mask2FormerDetector  # noqa: PLC0415 — optional dep
 
         frame_paths = sorted(args.frames_dir.glob("*.png"))
         if not frame_paths:

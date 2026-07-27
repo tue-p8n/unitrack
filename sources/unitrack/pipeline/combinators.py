@@ -680,12 +680,13 @@ class Gated:
 
         """
         g = self.gate(cs, ds, ctx)
-        return _gated_dispatch(g, self.then, cs, ds, ctx, cost)
+        return _gated_dispatch(g, self.then, cs=cs, ds=ds, ctx=ctx, cost=cost)
 
 
 def _gated_dispatch(  # noqa: PLR0913
     g: typing.Any,
     body: typing.Any,
+    *,
     cs: Tracklets,
     ds: Detections,
     ctx: FrameContext,

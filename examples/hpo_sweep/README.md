@@ -100,10 +100,11 @@ include `MotionGate` / `Mahalanobis` cost branches in the search space.
 
 ```python
 import json, optuna
+
 study = optuna.load_study(study_name="tracker_hpo", storage="sqlite:///study.db")
 best = study.best_trial
-print(best.params)         # the winning configuration
-print(best.value)          # the score (higher is better in synthetic mode)
+print(best.params)  # the winning configuration
+print(best.value)  # the score (higher is better in synthetic mode)
 ```
 
 ## Caveats
